@@ -52,12 +52,12 @@ public class Machine extends Conveyor {
 		int mWidth = (int) (1.5 / getFactory().getPixelSize()); 
 		int mHeight = (int) (0.4 / getFactory().getPixelSize()); 
 		int toolSize = (int) (0.3 / getFactory().getPixelSize()); 
-		double cosine1 = Math.cos((rot+90)*Math.PI/180);
-		double cosine2 = Math.cos((rot+210)*Math.PI/180);
-		double cosine3 = Math.cos((rot-30)*Math.PI/180);
-		double sine1 = Math.sin((rot+90)*Math.PI/180);
-		double sine2 = Math.sin((rot+210)*Math.PI/180);
-		double sine3 = Math.sin((rot-30)*Math.PI/180);
+		double cosine2 = Math.cos((rot+90)*Math.PI/180);
+		double cosine3 = Math.cos((rot+210)*Math.PI/180);
+		double cosine1 = Math.cos((rot-30)*Math.PI/180);
+		double sine2 = Math.sin((rot+90)*Math.PI/180);
+		double sine3 = Math.sin((rot+210)*Math.PI/180);
+		double sine1 = Math.sin((rot-30)*Math.PI/180);
 
 		if (orientation == Direction.VERTICAL) {
 			if (isToolWorking()) g.setColor(Color.red); else g.setColor(Color.darkGray);
@@ -149,6 +149,9 @@ public class Machine extends Conveyor {
 	
 	@Override
 	public String getName() {
+		if (inPlaceTool(0)) return "Machine (T1)";
+		if (inPlaceTool(1)) return "Machine (T2)";
+		if (inPlaceTool(2)) return "Machine (T3)";
 		return "Machine";
 	}
 	
