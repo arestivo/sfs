@@ -1,3 +1,3 @@
 h2. Shop Floor Simulator
 
-Simulates athe shop floor of a factory with machines that accept commands via modbus.
+Simulates the shop floor of a factory with machines that accept commands via modbus.
