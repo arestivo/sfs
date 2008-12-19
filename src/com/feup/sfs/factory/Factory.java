@@ -357,7 +357,7 @@ public class Factory extends JPanel{
 
 	public int getTransformation(int type, int tool) {
 		for (Transformation transformation : transformations) {
-			if (transformation.getTool() == tool + 1 && transformation.getInitial() == type) return transformation.getResult();
+			if (transformation.getTool() == tool && transformation.getInitial() == type) return transformation.getResult();
 		}
 		
 		return 0;
@@ -365,7 +365,7 @@ public class Factory extends JPanel{
 
 	public int getTransformationTime(int type, int tool) {
 		for (Transformation transformation : transformations) {
-			if (transformation.getTool() == tool + 1 && transformation.getInitial() == type) return transformation.getDuration();
+			if (transformation.getTool() == tool && transformation.getInitial() == type) return transformation.getDuration();
 		}
 		
 		return 0;
@@ -408,6 +408,16 @@ public class Factory extends JPanel{
 
 	public void removeBlock(Block b) {
 		blocks.remove(b);
+	}
+
+	public String getTransformations(int tool) {
+		String ret = "";
+		int id = 1;
+		for (Transformation transformation : transformations) {
+			if (transformation.getTool() == tool) ret += id;
+			id++;
+		}
+		return '[' + ret + ']';
 	}
 	
 }

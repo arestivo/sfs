@@ -22,7 +22,7 @@ public class Block {
 	private double oldCenterY;
 	
 	private long duration;
-	private long currentWork;
+	private long currentWork = 0;
 	
 	public Block(Factory factory, int type, double centerX, double centerY) {
 		this.factory = factory;
@@ -161,6 +161,6 @@ public class Block {
 	public void stopWork(){
 		if (type == 0) {nextType = -1; return;}
 		if (Math.abs(currentWork - duration) < duration / 10) {type = nextType; nextType = -1;}
-		else if (currentWork > duration + duration / 10) {type = 0; nextType = -1;}
+		else if (currentWork > duration + duration / 10) {type = 0; nextType = -1; currentWork = 0;}
 	}
 }

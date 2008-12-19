@@ -6,11 +6,14 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.swing.BorderFactory;
+
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
+import com.feup.sfs.factory.Factory;
 import com.feup.sfs.modbus.ModbusSlave;
 
 public class Machine extends Conveyor {
@@ -149,9 +152,9 @@ public class Machine extends Conveyor {
 	
 	@Override
 	public String getName() {
-		if (inPlaceTool(0)) return "Machine (T1)";
-		if (inPlaceTool(1)) return "Machine (T2)";
-		if (inPlaceTool(2)) return "Machine (T3)";
+		if (inPlaceTool(0)) return "Machine (T1:"+tools[0]+") " + Factory.getInstance().getTransformations(tools[0]);
+		if (inPlaceTool(1)) return "Machine (T2:"+tools[1]+") " + Factory.getInstance().getTransformations(tools[1]);
+		if (inPlaceTool(2)) return "Machine (T3:"+tools[2]+") " + Factory.getInstance().getTransformations(tools[2]);
 		return "Machine";
 	}
 	
