@@ -160,7 +160,7 @@ public class Block {
 	
 	public void stopWork(){
 		if (type == 0) {nextType = -1; return;}
-		if (Math.abs(currentWork - duration) < duration / 10) {type = nextType; nextType = -1;}
+		if (Math.abs(currentWork - duration) < duration / 10) {type = nextType; nextType = -1; currentWork = 0;}
 		else if (currentWork > duration + duration / 10) {type = 0; nextType = -1; currentWork = 0;}
 	}
 }
