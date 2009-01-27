@@ -85,7 +85,10 @@ public class Block {
 		
 		if (nextType != -1) {
 			g.setColor(getColor(nextType));
-			int angle = Math.min((int) (360*((double)(duration - currentWork)/duration)), 360);
+			int angle = (int) (360*((double)(duration - currentWork)/duration));
+			while (angle < 0) angle += 360;
+			while (angle > 360) angle -= 360;
+			angle = 360 - angle;
 			g.fillArc(getBounds().x, getBounds().y, getBounds().width, getBounds().height, 0, angle);
 		}
 		
