@@ -6,8 +6,6 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
-
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
