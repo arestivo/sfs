@@ -25,6 +25,7 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.facility.Conveyor;
 import com.feup.sfs.facility.Facility;
 import com.feup.sfs.facility.Machine;
+import com.feup.sfs.facility.Rail;
 import com.feup.sfs.facility.Rotator;
 import com.feup.sfs.facility.WarehouseIn;
 import com.feup.sfs.facility.WarehouseOut;
@@ -276,6 +277,7 @@ public class Factory extends JPanel{
 			else if (type.equals("machine")) factory.addFacility(new Machine(properties, id));
 			else if (type.equals("warehouseout")) factory.addFacility(new WarehouseOut(properties, id));
 			else if (type.equals("warehousein")) factory.addFacility(new WarehouseIn(properties, id));
+			else if (type.equals("rail")) factory.addFacility(new Rail(properties, id));
 			else throw new FactoryInitializationException("No such facility type " + type);
 			id++;
 		}
