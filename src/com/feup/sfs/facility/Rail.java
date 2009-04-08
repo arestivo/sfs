@@ -21,7 +21,7 @@ public class Rail extends Conveyor {
 		setRailSize(new Integer(properties.getProperty("facility."+id+".rail.size")).intValue());
 		
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R-
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(true));//R+
+		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R+
 		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
 		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
 	}
