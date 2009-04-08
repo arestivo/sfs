@@ -17,6 +17,7 @@
 package com.feup.sfs.block;
 
 import java.awt.Color;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class BlockType {
@@ -67,5 +68,14 @@ public class BlockType {
 
 	public int getId() {
 		return id;
+	}
+
+	public static BlockType getBlockType(String name) {
+		Enumeration<BlockType> elements = types.elements();
+		while (elements.hasMoreElements()) {
+			BlockType type = elements.nextElement();
+			if (type.getName().equalsIgnoreCase(name)) return type;
+		}
+		return null;
 	}
 }

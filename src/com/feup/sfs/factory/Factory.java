@@ -21,8 +21,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.MenuItem;
 import java.awt.Point;
+import java.awt.PopupMenu;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,7 +55,7 @@ import com.feup.sfs.transformation.Tool;
 import com.feup.sfs.transformation.Transformation;
 import com.feup.sfs.warehouse.Warehouse;
 
-public class Factory extends JPanel{
+public class Factory extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 
 	private double pixelSize; 
@@ -80,6 +84,10 @@ public class Factory extends JPanel{
 	private static Factory instance;
 	
 	private static Recorder recorder = null;
+
+	private static PopupMenu popup;
+	private int popupX;
+	private int popupY;
 	
 	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, String floorColor, String recordFile) throws FileNotFoundException {
 		this.width = width;
@@ -95,8 +103,21 @@ public class Factory extends JPanel{
 		this.floorColor = floorColor;
 		if (recordFile != null) recorder = new Recorder(recordFile);
 		Factory.instance = this; 
+		
+		popup = new PopupMenu("Add Block");
+		popup.addActionListener(this);
+		add(popup);
 	}
 
+	public void processMouseEvent(MouseEvent e) {
+	    if (e.isPopupTrigger()) {
+	    	popupX = e.getX();
+	    	popupY = e.getY();
+	        popup.show(e.getComponent(), e.getX(), e.getY());
+	    }
+	    super.processMouseEvent(e);
+	}
+		
 	@Override
 	public Dimension getPreferredSize(){
 		return new Dimension((int)(width/pixelSize), (int)(heigth/pixelSize));
@@ -248,6 +269,7 @@ public class Factory extends JPanel{
 			String name = properties.getProperty("blocktype."+id+".name");
 			String color = properties.getProperty("blocktype."+id+".color");
 			BlockType.addType(id, name, color);
+			popup.add(new MenuItem(name));
 			id++;
 		}
 	}
@@ -436,6 +458,12 @@ public class Factory extends JPanel{
 			id++;
 		}
 		return '[' + ret + ']';
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent action) {
+		BlockType type = BlockType.getBlockType(action.getActionCommand());
+		addBlock(type.getId(), popupX*pixelSize, popupY*pixelSize);
 	}
 	
 }
