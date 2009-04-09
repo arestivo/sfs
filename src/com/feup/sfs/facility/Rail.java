@@ -80,8 +80,10 @@ public class Rail extends Conveyor {
 			ArrayList<Block> blocks = getFactory().getBlocks();
 			for (Block block : blocks) {
 				if (getBounds().intersects(block.getBounds())){
-					if (movedLeft) block.setMoveLeft(true);
-					if (movedRight) block.setMoveRight(true);
+					if (movedLeft && getOrientation()==Direction.VERTICAL) block.setMoveLeft(true);
+					if (movedRight && getOrientation()==Direction.VERTICAL) block.setMoveRight(true);
+					if (movedLeft && getOrientation()==Direction.HORIZONTAL) block.setMoveTop(true);
+					if (movedRight && getOrientation()==Direction.HORIZONTAL) block.setMoveBottom(true);
 				}
 			}
 		}
