@@ -3,12 +3,16 @@ package com.feup.sfs.facility;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
+import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
+import com.feup.sfs.facility.Conveyor.Direction;
 import com.feup.sfs.modbus.ModbusSlave;
 
 public class Rail extends Conveyor {
@@ -36,7 +40,10 @@ public class Rail extends Conveyor {
 	
 	public void paint(Graphics g){
 		
+		double oldRailPosition = railPosition;
+		railPosition = 0;
 		Rectangle bounds = getBounds();
+		railPosition = oldRailPosition;
 		g.setColor(Color.darkGray);
 		
 		double pixelSize = getFactory().getPixelSize();
@@ -50,32 +57,34 @@ public class Rail extends Conveyor {
 			g.drawLine(bounds.x + 3 * bounds.width / 4, bounds.y - railSize / 2 + bounds.height / 2, bounds.x + 3 * bounds.width / 4, bounds.y + railSize / 2 + bounds.height / 2);
 		}
 	
-		if (getOrientation()==Direction.VERTICAL) {
-			double oldCenter = getCenterX();
-			setCenterX(oldCenter + railPosition);
-			paintConveyor(g);
-			setCenterX(oldCenter);
-		} else {
-			double oldCenter = getCenterY();
-			setCenterY(oldCenter + railPosition);
-			paintConveyor(g);
-			setCenterY(oldCenter);			
-		}
+		paintConveyor(g);
 	}
 
 	@Override
 	public void doStep(boolean conveyorBlocked){
+		boolean movedLeft = false;
+		boolean movedRight = false;
 		if (facilityError) return;
 		boolean forcing = false;
-		super.doStep(true);
+		super.doStep(isRailMovingLeft() || isRailMovingLeft());
 		
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
 		
-		if (isRailMovingLeft()) railPosition -= speed;
-		if (isRailMovingRight()) railPosition += speed;
+		if (isRailMovingLeft() && !isRailMovingRight()) { railPosition -= speed; movedLeft = true;}
+		if (isRailMovingRight() && !isRailMovingLeft()) {railPosition += speed; movedRight = true;}
 		
-		if (railPosition < -railSize / 2) {railPosition = -railSize / 2; forcing = true;}
-		if (railPosition > railSize / 2) {railPosition = railSize / 2; forcing = true;}
+		if (railPosition < -railSize / 2) {railPosition = -railSize / 2; forcing = true; movedLeft = false;}
+		if (railPosition > railSize / 2) {railPosition = railSize / 2; forcing = true; movedRight = false;}
+	
+		if (movedLeft || movedRight) {
+			ArrayList<Block> blocks = getFactory().getBlocks();
+			for (Block block : blocks) {
+				if (getBounds().intersects(block.getBounds())){
+					if (movedLeft) block.setMoveLeft(true);
+					if (movedRight) block.setMoveRight(true);
+				}
+			}
+		}
 		
 		isForcing(forcing);
 	}
@@ -107,5 +116,31 @@ public class Rail extends Conveyor {
 		return railSize;
 	}
 
-	
+	@Override
+	public Collection<String> getActions() {
+		ArrayList<String> actions = new ArrayList<String>();
+		actions.add("Motor +");
+		actions.add("Motor -");
+		actions.add("Slide +");
+		actions.add("Slide -");
+		return actions;
+	}
+
+	@Override
+	public void doAction(String actionName) {
+		if (actionName.equals("Slide +")) setDigitalOut(2, !getDigitalOut(2));
+		if (actionName.equals("Slide -")) setDigitalOut(3, !getDigitalOut(3));
+		super.doAction(actionName);
+	}
+		
+	@Override
+	public Rectangle getBounds() {
+		double pixelSize = getFactory().getPixelSize();
+		int x = getOrientation()==Direction.VERTICAL?(int) (getCenterX()/pixelSize - width/2/pixelSize + railPosition/pixelSize):(int) (getCenterX()/pixelSize - length/2/pixelSize); 
+		int y = getOrientation()==Direction.VERTICAL?(int) (getCenterY()/pixelSize - length/2/pixelSize):(int) (getCenterY()/pixelSize - width/2/pixelSize + railPosition/pixelSize);
+		int w = getOrientation()==Direction.VERTICAL?(int) (width/pixelSize):(int) (length/pixelSize);
+		int h = getOrientation()==Direction.VERTICAL?(int) (length/pixelSize):(int) (width/pixelSize);
+		return new Rectangle(x, y, w, h);
+	}
+
 }

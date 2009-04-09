@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.Point;
 import java.awt.PopupMenu;
@@ -32,6 +33,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -85,9 +88,8 @@ public class Factory extends JPanel implements ActionListener{
 	
 	private static Recorder recorder = null;
 
-	private static PopupMenu popup;
-	private int popupX;
-	private int popupY;
+	private Facility popupfacility;
+	private PopupMenu popup;
 	
 	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, String floorColor, String recordFile) throws FileNotFoundException {
 		this.width = width;
@@ -102,18 +104,31 @@ public class Factory extends JPanel implements ActionListener{
 		this.toolRotationSpeed = toolRotationSpeed;
 		this.floorColor = floorColor;
 		if (recordFile != null) recorder = new Recorder(recordFile);
-		Factory.instance = this; 
-		
-		popup = new PopupMenu("Add Block");
-		popup.addActionListener(this);
-		add(popup);
+		Factory.instance = this; 		
 	}
 
 	public void processMouseEvent(MouseEvent e) {
 	    if (e.isPopupTrigger()) {
-	    	popupX = e.getX();
-	    	popupY = e.getY();
-	        popup.show(e.getComponent(), e.getX(), e.getY());
+			popupfacility = null;
+	    	for (Facility facility : facilities) {
+				if (facility.getBounds().contains(new Point(e.getX(),e.getY()))) {
+					if (popup != null) remove(popup);
+					popupfacility = facility;
+					popup = new PopupMenu(facility.getName());
+					Menu blockMenu = new Menu("Add Block"); 
+					Menu actionMenu = new Menu("Actions");
+					popup.add(blockMenu);
+					popup.add(actionMenu);
+					Collection<BlockType> types = BlockType.getBlockTypes();
+					Collection<String> actions = facility.getActions();
+					for (BlockType type : types) blockMenu.add(type.getName());
+					for (String action : actions) actionMenu.add(action);
+					add(popup);
+					blockMenu.addActionListener(this);
+					actionMenu.addActionListener(this);
+					popup.show(this, e.getX(), e.getY());					
+				}
+			}
 	    }
 	    super.processMouseEvent(e);
 	}
@@ -269,7 +284,6 @@ public class Factory extends JPanel implements ActionListener{
 			String name = properties.getProperty("blocktype."+id+".name");
 			String color = properties.getProperty("blocktype."+id+".color");
 			BlockType.addType(id, name, color);
-			popup.add(new MenuItem(name));
 			id++;
 		}
 	}
@@ -462,8 +476,15 @@ public class Factory extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
-		BlockType type = BlockType.getBlockType(action.getActionCommand());
-		addBlock(type.getId(), popupX*pixelSize, popupY*pixelSize);
+		Menu menu = (Menu) action.getSource();
+		if (popupfacility !=null && menu.getLabel().equals("Add Block")) {
+			BlockType type = BlockType.getBlockType(action.getActionCommand());
+			addBlock(type.getId(), popupfacility.getBounds().getCenterX()*pixelSize, popupfacility.getBounds().getCenterY()*pixelSize);
+		}
+		if (popupfacility !=null && menu.getLabel().equals("Actions")) {
+			String actionName = action.getActionCommand();
+			popupfacility.doAction(actionName);
+		}
 	}
 	
 }

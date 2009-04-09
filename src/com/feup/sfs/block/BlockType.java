@@ -17,6 +17,7 @@
 package com.feup.sfs.block;
 
 import java.awt.Color;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -77,5 +78,9 @@ public class BlockType {
 			if (type.getName().equalsIgnoreCase(name)) return type;
 		}
 		return null;
+	}
+
+	public static Collection<BlockType> getBlockTypes() {
+		return types.values();		
 	}
 }

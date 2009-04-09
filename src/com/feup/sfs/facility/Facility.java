@@ -19,8 +19,10 @@ package com.feup.sfs.facility;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.Collection;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
+import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.factory.Factory;
 import com.feup.sfs.modbus.ModbusSlave;
@@ -61,6 +63,10 @@ public abstract class Facility {
 
 	protected void setDigitalIn(int i, boolean b) {
 		((SimpleDigitalIn)ModbusSlave.getSimpleProcessImage().getDigitalIn(digitalInStart + i)).set(b);
+	}
+
+	protected void setDigitalOut(int i, boolean b) {
+		((SimpleDigitalOut)ModbusSlave.getSimpleProcessImage().getDigitalOut(digitalOutStart + i)).set(b);
 	}
 	
 	public int getRegister(int i){
@@ -117,5 +123,8 @@ public abstract class Facility {
 	public int getFirstRegister() {
 		return registerStart;
 	}
-	
+
+	public abstract Collection<String> getActions();
+
+	public abstract void doAction(String actionName);
 }

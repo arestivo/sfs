@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -128,5 +129,21 @@ public class Rotator extends Conveyor {
 	@Override
 	public int getNumberDigitalOuts() {return 4;}
 
-	
+	@Override
+	public Collection<String> getActions() {
+		ArrayList<String> actions = new ArrayList<String>();
+		actions.add("Motor +");
+		actions.add("Motor -");
+		actions.add("Rotate +");
+		actions.add("Rotate -");
+		return actions;
+	}
+
+	@Override
+	public void doAction(String actionName) {
+		if (actionName.equals("Rotate +")) setDigitalOut(2, !getDigitalOut(2));
+		if (actionName.equals("Rotate -")) setDigitalOut(3, !getDigitalOut(3));
+		super.doAction(actionName);
+	}
+
 }

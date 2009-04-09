@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -81,6 +82,7 @@ public class Conveyor extends Facility{
 		boolean middleSensor = false;
 		for (Block block : blocks) {
 			if (!conveyorBlocked && getBounds().intersects(block.getBounds())){
+
 				if (isRunningLeft()) block.setMoveLeft(true);
 				if (isRunningRight()) block.setMoveRight(true);
 				if (isRunningTop()) block.setMoveTop(true);
@@ -167,4 +169,18 @@ public class Conveyor extends Facility{
 	
 	@Override
 	public int getNumberRegisters() {return 0;}
+
+	@Override
+	public Collection<String> getActions() {
+		ArrayList<String> actions = new ArrayList<String>();
+		actions.add("Motor +");
+		actions.add("Motor -");
+		return actions;
+	}
+
+	@Override
+	public void doAction(String actionName) {
+		if (actionName.equals("Motor +")) setDigitalOut(0, !getDigitalOut(0));
+		if (actionName.equals("Motor -")) setDigitalOut(1, !getDigitalOut(1));
+	}
 }
