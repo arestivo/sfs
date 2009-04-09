@@ -119,9 +119,12 @@ public class Factory extends JPanel implements ActionListener{
 					Menu actionMenu = new Menu("Actions");
 					popup.add(blockMenu);
 					popup.add(actionMenu);
-					Collection<BlockType> types = BlockType.getBlockTypes();
 					Collection<String> actions = facility.getActions();
-					for (BlockType type : types) blockMenu.add(type.getName());
+					int bt = 1;
+					while (bt < BlockType.getNumberBlockTypes()) {
+						blockMenu.add(BlockType.getBlockType(bt).getName());
+						bt++;
+					}
 					for (String action : actions) actionMenu.add(action);
 					add(popup);
 					blockMenu.addActionListener(this);
