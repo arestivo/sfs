@@ -127,4 +127,9 @@ public abstract class Facility {
 	public abstract Collection<String> getActions();
 
 	public abstract void doAction(String actionName);
+
+	public void stop() {
+		int ndo = getNumberDigitalOuts();
+		for (int i = 0; i < ndo; i++) setDigitalOut(i, false);
+	}
 }
