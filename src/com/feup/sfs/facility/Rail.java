@@ -78,8 +78,8 @@ public class Rail extends Conveyor {
 		if (railPosition < -railSize / 2) {railPosition = -railSize / 2; forcing = true; movedLeft = false;}
 		if (railPosition > railSize / 2) {railPosition = railSize / 2; forcing = true; movedRight = false;}
 		
-		if (railPosition <= -railSize / 2) setDigitalIn(3, true);
-		if (railPosition >= railSize / 2) setDigitalIn(2, true);
+		if (railPosition <= -railSize / 2) setDigitalIn(1, true); else setDigitalIn(1, false);
+		if (railPosition >= railSize / 2) setDigitalIn(2, true); else setDigitalIn(2, false);
 		
 		if (movedLeft || movedRight) {
 			ArrayList<Block> blocks = getFactory().getBlocks();
@@ -135,8 +135,8 @@ public class Rail extends Conveyor {
 
 	@Override
 	public void doAction(String actionName) {
-		if (actionName.equals("Slide +")) setDigitalOut(2, !getDigitalOut(2));
-		if (actionName.equals("Slide -")) setDigitalOut(3, !getDigitalOut(3));
+		if (actionName.equals("Slide +")) setDigitalOut(3, !getDigitalOut(3));
+		if (actionName.equals("Slide -")) setDigitalOut(2, !getDigitalOut(2));
 		super.doAction(actionName);
 	}
 		
