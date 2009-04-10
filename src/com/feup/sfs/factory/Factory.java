@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -95,6 +96,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private PopupMenu popup;
 
 	private static PlayBack playback = null;
+	private static Random rng = new Random();
 	
 	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
 		this.width = width;
@@ -520,5 +522,12 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent arg0) { }
+
+	public static int generateRandom(int min, int max) {
+		return rng.nextInt(1 + max - min) + min;
+	}
 	
+	public static void setRandomSeed(long seed) {
+		rng.setSeed(seed);
+	}
 }

@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Properties;
+import java.util.Random;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.block.BlockType;
@@ -47,7 +48,7 @@ public class Warehouse {
 	
 	private int mintime;
 	private int maxtime;
-
+	
 	public Warehouse(Factory factory, int id, double centerX, double centerY, double width, double length, String orientation, Properties properties) {
 		this.factory = factory;
 		this.centerX = centerX;
@@ -65,7 +66,7 @@ public class Warehouse {
 		}
 		
 		this.mintime = new Integer(properties.getProperty("warehouse."+id+".mintime")).intValue();
-		this.maxtime = new Integer(properties.getProperty("warehouse."+id+".mintime")).intValue();
+		this.maxtime = new Integer(properties.getProperty("warehouse."+id+".maxtime")).intValue();
 		
 		error = false;
 	}
@@ -107,12 +108,12 @@ public class Warehouse {
 	}
 	
 	public void addOrder(WarehouseOut out, int blocktype) {
-		Order o = new OrderOut(blocktype, (int)(Math.random() * (maxtime - mintime) + mintime), out);
+		Order o = new OrderOut(blocktype, Factory.generateRandom(mintime, maxtime), out);
 		orders.add(o);
 	}
 
 	public void addOrder(WarehouseIn in) {
-		Order o = new OrderIn((int)(Math.random() * (maxtime - mintime) + mintime), in);
+		Order o = new OrderIn(Factory.generateRandom(mintime, maxtime), in);
 		orders.add(o);
 	}
 	
