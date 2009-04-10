@@ -35,6 +35,9 @@ public class Recorder {
 	public Recorder(String file) throws FileNotFoundException {
 		System.out.println("Recording to: " + file);
 		ps = new PrintStream(new FileOutputStream(file));
+		int seed = Factory.generateRandom(0, 100000);
+		Factory.setRandomSeed(seed);
+		ps.println(seed);
 	}
 	
 	private void init() {
