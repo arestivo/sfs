@@ -72,12 +72,15 @@ public class Rail extends Conveyor {
 		
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
 		
-		if (isRailMovingLeft() && !isRailMovingRight()) { railPosition -= speed; movedLeft = true;}
+		if (isRailMovingLeft() && !isRailMovingRight()) {railPosition -= speed; movedLeft = true;}
 		if (isRailMovingRight() && !isRailMovingLeft()) {railPosition += speed; movedRight = true;}
 		
 		if (railPosition < -railSize / 2) {railPosition = -railSize / 2; forcing = true; movedLeft = false;}
 		if (railPosition > railSize / 2) {railPosition = railSize / 2; forcing = true; movedRight = false;}
-	
+		
+		if (railPosition <= -railSize / 2) setDigitalIn(3, true);
+		if (railPosition >= railSize / 2) setDigitalIn(2, true);
+		
 		if (movedLeft || movedRight) {
 			ArrayList<Block> blocks = getFactory().getBlocks();
 			for (Block block : blocks) {

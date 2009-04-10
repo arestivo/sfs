@@ -52,14 +52,14 @@ public class Recorder {
 		initialized = true;
 	}
 	
-	private void printDeltas() {
+	private void printDeltas(long l) {
 		ArrayList<Facility> facilities = Factory.getInstance().getFacilities();
 		int i = 0, o = 0, r = 0;
 		for (Facility facility : facilities) {
 			for (int d = 0; d < facility.getNumberDigitalIns(); d++) {
 				int v = facility.getDigitalIn(d)?1:0;
 				if (inputs.elementAt(i).intValue()!=v) {
-					ps.println("IN " + i + " " + v);
+					ps.println(l + " IN " + i + " " + v);
 					inputs.setElementAt(new Integer(v), i);
 				}
 				i++;
@@ -67,7 +67,7 @@ public class Recorder {
 			for (int d = 0; d < facility.getNumberDigitalOuts(); d++) {
 				int v = facility.getDigitalOut(d)?1:0;
 				if (outputs.elementAt(o).intValue()!=v) {
-					ps.println("OUT " + o + " " + v);
+					ps.println(l + " OUT " + o + " " + v);
 					outputs.setElementAt(new Integer(v), o);
 				}
 				o++;
@@ -75,7 +75,7 @@ public class Recorder {
 			for (int d = 0; d < facility.getNumberRegisters(); d++) {
 				int v = facility.getRegister(d);
 				if (registers.elementAt(r).intValue()!=v) {
-					ps.println("REG " + r + " " + v);
+					ps.println(l + " REG " + r + " " + v);
 					registers.setElementAt(new Integer(v), r);
 				}
 				r++;
@@ -84,8 +84,8 @@ public class Recorder {
 		}		
 	}
 	
-	public void record() {
+	public void record(long l) {
 		if (!initialized) init();
-		else printDeltas();
+		else printDeltas(l);
 	}
 }

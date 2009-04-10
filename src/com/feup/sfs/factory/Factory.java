@@ -55,6 +55,7 @@ import com.feup.sfs.facility.Rotator;
 import com.feup.sfs.facility.WarehouseIn;
 import com.feup.sfs.facility.WarehouseOut;
 import com.feup.sfs.modbus.ModbusSlave;
+import com.feup.sfs.record.PlayBack;
 import com.feup.sfs.record.Recorder;
 import com.feup.sfs.transformation.Tool;
 import com.feup.sfs.transformation.Transformation;
@@ -92,8 +93,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 
 	private Facility popupfacility;
 	private PopupMenu popup;
+
+	private static PlayBack playback = null;
 	
-	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, String floorColor, String recordFile) throws FileNotFoundException {
+	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
 		this.width = width;
 		this.heigth = heigth;
 		this.blockSize = blockSize;
@@ -106,6 +109,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		this.toolRotationSpeed = toolRotationSpeed;
 		this.floorColor = floorColor;
 		if (recordFile != null) recorder = new Recorder(recordFile);
+		if (playbackFile != null) playback = new PlayBack(playbackFile);
 		Factory.instance = this;
 		
 		setFocusable(true);
@@ -167,8 +171,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		properties.load(new FileInputStream("plant.properties"));
 
 		String recordFile = null;
+		String playbackFile = null;
 		
 		if (args.length == 2 && args[0].equals("--record")) recordFile = args[1]; 
+		if (args.length == 2 && args[0].equals("--playback")) playbackFile = args[1]; 
 		
 		try {
 			int width = new Integer(properties.getProperty("configuration.width")).intValue();
@@ -186,7 +192,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			String floorColor = properties.getProperty("floor.color");
 			if (floorColor == null) floorColor = "DDDDDD";
 			
-			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, toolRotationSpeed, floorColor, recordFile);
+			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, toolRotationSpeed, floorColor, recordFile, playbackFile);
 			ToolTipManager.sharedInstance().registerComponent(factory);
 
 			ModbusSlave.init(port, loopback);
@@ -214,9 +220,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		frame.add(Factory.getInstance());
 		frame.pack();
 		frame.setVisible(true);
-		
+				
 		new Thread(new Runnable(){
 			public void run() {
+				long time = 0;
 				while(true){
 					try {
 						Thread.sleep(Factory.getInstance().getSimulationTime());
@@ -242,7 +249,8 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 					Factory.getInstance().repaint();
 					
 					// Record
-					if (recorder != null) recorder.record();
+					if (recorder != null) recorder.record(time++);
+					if (playback != null) playback.play(time++);
 				}
 			}
 		}).start();
@@ -502,13 +510,11 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	public void keyReleased(KeyEvent arg0) { 
 		int kc = arg0.getKeyCode();		
 		int km = arg0.getModifiers();
-		System.out.println(kc + " " + km);
 		if (kc == 81 && km == 2) System.exit(0);
 		if (kc == 32 && km == 0) {
 			for (Facility facility : facilities) {
 				facility.stop();
 			}
-		
 		}
 	}
 
