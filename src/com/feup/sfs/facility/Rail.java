@@ -12,7 +12,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
-import com.feup.sfs.facility.Conveyor.Direction;
 import com.feup.sfs.modbus.ModbusSlave;
 
 public class Rail extends Conveyor {

@@ -22,7 +22,6 @@ import java.awt.Rectangle;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Properties;
-import java.util.Random;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.block.BlockType;
