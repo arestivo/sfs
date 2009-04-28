@@ -130,7 +130,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 					popup.add(actionMenu);
 					Collection<String> actions = facility.getActions();
 					int bt = 1;
-					while (bt < BlockType.getNumberBlockTypes()) {
+					while (bt <= BlockType.getNumberBlockTypes()) {
 						blockMenu.add(BlockType.getBlockType(bt).getName());
 						bt++;
 					}
