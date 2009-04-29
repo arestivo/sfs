@@ -77,6 +77,10 @@ public class Conveyor extends Facility{
 
 	@Override
 	public void doStep(boolean conveyorBlocked){
+		doStep(conveyorBlocked, getCenterX(), getCenterY());
+	}
+	
+	public void doStep(boolean conveyorBlocked, double sensorX, double sensorY){
 		if (facilityError) return;
 		ArrayList<Block> blocks = getFactory().getBlocks();
 		boolean middleSensor = false;
@@ -88,7 +92,7 @@ public class Conveyor extends Facility{
 				if (isRunningTop()) block.setMoveTop(true);
 				if (isRunningBottom()) block.setMoveBottom(true);
 			}
-			if (block.getDistanceTo(getCenterX(), getCenterY()) < getFactory().getSensorRadius()) 
+			if (block.getDistanceTo(sensorX, sensorY) < getFactory().getSensorRadius()) 
 				middleSensor = true;
 		}
 		setDigitalIn(0, middleSensor);

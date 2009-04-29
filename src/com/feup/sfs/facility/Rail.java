@@ -67,7 +67,10 @@ public class Rail extends Conveyor {
 		boolean movedRight = false;
 		if (facilityError) return;
 		boolean forcing = false;
-		super.doStep(isRailMovingLeft() || isRailMovingLeft());
+		if (getOrientation() == Direction.VERTICAL)
+			super.doStep(isRailMovingLeft() || isRailMovingLeft(), getCenterX() + railPosition, getCenterY());
+		else
+			super.doStep(isRailMovingLeft() || isRailMovingLeft(), getCenterX(), getCenterY() + railPosition);
 		
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
 		
@@ -148,5 +151,4 @@ public class Rail extends Conveyor {
 		int h = getOrientation()==Direction.VERTICAL?(int) (length/pixelSize):(int) (width/pixelSize);
 		return new Rectangle(x, y, w, h);
 	}
-
 }
