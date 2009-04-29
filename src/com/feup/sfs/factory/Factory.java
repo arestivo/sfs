@@ -91,6 +91,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private static Recorder recorder = null;
 
 	private Facility popupfacility;
+	private Block popupblock;
 	private PopupMenu popup;
 
 	private static PlayBack playback = null;
@@ -119,20 +120,29 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	public void processMouseEvent(MouseEvent e) {
 	    if (e.isPopupTrigger()) {
 			popupfacility = null;
+			popupblock = null;
 	    	for (Facility facility : facilities) {
 				if (facility.getBounds().contains(new Point(e.getX(),e.getY()))) {
 					if (popup != null) remove(popup);
 					popupfacility = facility;
 					popup = new PopupMenu(facility.getName());
-					Menu blockMenu = new Menu("Add Block"); 
+					Menu blockMenu = new Menu("Blocks"); 
 					Menu actionMenu = new Menu("Actions");
 					popup.add(blockMenu);
 					popup.add(actionMenu);
 					Collection<String> actions = facility.getActions();
-					int bt = 1;
-					while (bt <= BlockType.getNumberBlockTypes()) {
-						blockMenu.add(BlockType.getBlockType(bt).getName());
-						bt++;
+					for (Block block : getBlocks())
+						if (block.getDistanceTo(e.getX()*pixelSize, e.getY()*pixelSize) < blockSize / 2) {
+							blockMenu.add("Remove");
+							popupblock = block;
+							break;
+						}
+					if (popupblock == null) {
+						int bt = 1;
+						while (bt <= BlockType.getNumberBlockTypes()) {
+							blockMenu.add("Add " + BlockType.getBlockType(bt).getName());
+							bt++;
+						}
 					}
 					for (String action : actions) actionMenu.add(action);
 					add(popup);
@@ -493,9 +503,13 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	@Override
 	public void actionPerformed(ActionEvent action) {
 		Menu menu = (Menu) action.getSource();
-		if (popupfacility !=null && menu.getLabel().equals("Add Block")) {
-			BlockType type = BlockType.getBlockType(action.getActionCommand());
-			addBlock(type.getId(), popupfacility.getBounds().getCenterX()*pixelSize, popupfacility.getBounds().getCenterY()*pixelSize);
+		if (popupfacility !=null && menu.getLabel().equals("Blocks")) {
+			if (action.getActionCommand().equals("Remove"))
+				removeBlock(popupblock);
+			else {
+				BlockType type = BlockType.getBlockType(action.getActionCommand().substring(4));
+				addBlock(type.getId(), popupfacility.getBounds().getCenterX()*pixelSize, popupfacility.getBounds().getCenterY()*pixelSize);
+			}
 		}
 		if (popupfacility !=null && menu.getLabel().equals("Actions")) {
 			String actionName = action.getActionCommand();
