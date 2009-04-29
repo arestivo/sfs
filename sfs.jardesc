@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/home/arestivo/workspace/ShopFloorSimulator/jar/sfs.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/ShopFloorSimulator/sfs.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <jar path="/home/arestivo/workspace/sfs/jar/sfs.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/sfs/sfs.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
-    <manifest generateManifest="false" manifestLocation="/ShopFloorSimulator/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+    <manifest generateManifest="false" manifestLocation="/sfs/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
         <sealing sealJar="false">
             <packagesToSeal/>
             <packagesToUnSeal/>
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <folder path="/ShopFloorSimulator/lib"/>
-        <javaElement handleIdentifier="=ShopFloorSimulator/src"/>
+        <folder path="/sfs/lib"/>
+        <javaElement handleIdentifier="=sfs/src"/>
     </selectedElements>
     <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
 </jardesc>
