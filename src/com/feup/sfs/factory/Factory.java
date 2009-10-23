@@ -49,6 +49,7 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.facility.Conveyor;
 import com.feup.sfs.facility.Facility;
 import com.feup.sfs.facility.Machine;
+import com.feup.sfs.facility.Pusher;
 import com.feup.sfs.facility.Rail;
 import com.feup.sfs.facility.Rotator;
 import com.feup.sfs.facility.WarehouseIn;
@@ -79,6 +80,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 
 	private double conveyorSpeed;
 	private double rotationSpeed;
+	private double pushSpeed;
 
 	private int errorTime;
 
@@ -97,7 +99,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private static PlayBack playback = null;
 	private static Random rng = new Random();
 	
-	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
+	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
 		this.width = width;
 		this.heigth = heigth;
 		this.blockSize = blockSize;
@@ -109,6 +111,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		this.errorTime = errorTime;
 		this.toolRotationSpeed = toolRotationSpeed;
 		this.floorColor = floorColor;
+		this.pushSpeed = pushSpeed;
 		if (recordFile != null) recorder = new Recorder(recordFile);
 		if (playbackFile != null) playback = new PlayBack(playbackFile);
 		Factory.instance = this;
@@ -193,6 +196,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			double pixelSize = new Double(properties.getProperty("configuration.pixelsize")).doubleValue();
 			double conveyorSpeed = new Double(properties.getProperty("configuration.conveyorspeed")).doubleValue();
 			double rotationSpeed = new Double(properties.getProperty("configuration.rotationspeed")).doubleValue();
+			double pushSpeed = new Double(properties.getProperty("configuration.pushspeed")).doubleValue();
 			double toolRotationSpeed = new Double(properties.getProperty("configuration.toolrotationspeed")).doubleValue();
 			int simulationTime = new Integer(properties.getProperty("configuration.simulationtime")).intValue();
 			int errorTime = new Integer(properties.getProperty("configuration.errortime")).intValue();
@@ -202,7 +206,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			String floorColor = properties.getProperty("floor.color");
 			if (floorColor == null) floorColor = "DDDDDD";
 			
-			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, toolRotationSpeed, floorColor, recordFile, playbackFile);
+			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, toolRotationSpeed, pushSpeed, floorColor, recordFile, playbackFile);
 			ToolTipManager.sharedInstance().registerComponent(factory);
 
 			ModbusSlave.init(port, loopback);
@@ -356,6 +360,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			else if (type.equals("warehouseout")) factory.addFacility(new WarehouseOut(properties, id));
 			else if (type.equals("warehousein")) factory.addFacility(new WarehouseIn(properties, id));
 			else if (type.equals("rail")) factory.addFacility(new Rail(properties, id));
+			else if (type.equals("pusher")) factory.addFacility(new Pusher(properties, id));
 			else throw new FactoryInitializationException("No such facility type " + type);
 			id++;
 		}
@@ -427,6 +432,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		return rotationSpeed;
 	}
 
+	public double getPushSpeed() {
+		return pushSpeed;
+	}
+	
 	public double getToolRotationSpeed() {
 		return toolRotationSpeed;
 	}
@@ -542,4 +551,5 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	public static void setRandomSeed(long seed) {
 		rng.setSeed(seed);
 	}
+
 }
