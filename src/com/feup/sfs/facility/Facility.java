@@ -103,7 +103,7 @@ public abstract class Facility {
 	}
 
 	public String getType() {
-		return getName() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
+		return "#" + getId() + " " + getName() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
 	}
 
 	public abstract String getName();
