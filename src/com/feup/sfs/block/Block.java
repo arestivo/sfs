@@ -174,7 +174,7 @@ public class Block {
 		if (nextType!=-1 && nextType != transformation) {type = 0; nextType = -1;}
 		else if (nextType==-1) nextType = transformation;
 		if (nextType == transformation) currentWork += step;
-		if (Math.abs(currentWork) > duration + duration / 8) {type = 0; nextType = -1;}
+		if (Math.abs(currentWork) > duration + duration / 10) {type = 0; nextType = -1;}
 	}
 	
 	public void stopWork(){
