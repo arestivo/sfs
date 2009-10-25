@@ -233,6 +233,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		
 		frame.add(Factory.getInstance());
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 				
 		new Thread(new Runnable(){
