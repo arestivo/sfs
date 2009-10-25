@@ -24,7 +24,6 @@ public class OrderOut extends Order{
 	
 	public OrderOut(int blocktype, int time, WarehouseOut out) {
 		super(time);
-		System.out.println(time);
 		this.blocktype = blocktype;
 		this.setOut(out);
 	}
