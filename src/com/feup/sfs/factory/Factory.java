@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -83,6 +84,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private double pushSpeed;
 
 	private int errorTime;
+	private int floorTime;
 
 	private double toolRotationSpeed;
 
@@ -99,7 +101,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private static PlayBack playback = null;
 	private static Random rng = new Random();
 	
-	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
+	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, int floorTime, double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
 		this.width = width;
 		this.heigth = heigth;
 		this.blockSize = blockSize;
@@ -109,6 +111,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		this.sensorRadius = sensorRadius;
 		this.rotationSpeed = rotationSpeed;
 		this.errorTime = errorTime;
+		this.floorTime = floorTime;
 		this.toolRotationSpeed = toolRotationSpeed;
 		this.floorColor = floorColor;
 		this.pushSpeed = pushSpeed;
@@ -200,13 +203,14 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			double toolRotationSpeed = new Double(properties.getProperty("configuration.toolrotationspeed")).doubleValue();
 			int simulationTime = new Integer(properties.getProperty("configuration.simulationtime")).intValue();
 			int errorTime = new Integer(properties.getProperty("configuration.errortime")).intValue();
+			int floorTime = new Integer(properties.getProperty("configuration.floortime")).intValue();
 			int port = new Integer(properties.getProperty("configuration.port")).intValue();
 			double sensorRadius = new Double(properties.getProperty("configuration.sensorradius")).doubleValue();
 			boolean loopback = properties.getProperty("configuration.loopback").equals("true"); 
 			String floorColor = properties.getProperty("floor.color");
 			if (floorColor == null) floorColor = "DDDDDD";
 			
-			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, toolRotationSpeed, pushSpeed, floorColor, recordFile, playbackFile);
+			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, floorTime, toolRotationSpeed, pushSpeed, floorColor, recordFile, playbackFile);
 			ToolTipManager.sharedInstance().registerComponent(factory);
 
 			ModbusSlave.init(port, loopback);
@@ -245,6 +249,21 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 					} catch (InterruptedException e) {}
 					for (Block block : Factory.getInstance().getBlocks())
 						block.resetMovements();
+					// Verify if blocks are on the floor
+					Vector<Block> toBeRemoved = new Vector<Block>();
+					for (Block block : Factory.getInstance().getBlocks()) {
+						if (block.isOnTheFloor()) {
+							if (block.getTimeOnTheFloor() > Factory.getInstance().getFloorTime()) toBeRemoved.add(block);
+							continue;
+						}
+						boolean onTheFloor = true;
+						for (Facility facility : Factory.getInstance().getFacilities())
+							if (facility.getBounds().intersects(block.getBounds())) {onTheFloor = false; break;}
+						block.setOnTheFloor(onTheFloor);
+					}
+					for (Block block : toBeRemoved) {
+						Factory.getInstance().removeBlock(block);
+					}
 					// Move facilities
 					for (Facility facility : Factory.getInstance().getFacilities())
 						facility.doStep(false);
@@ -254,7 +273,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 					// Test for collisions
 					for (Block block1 : Factory.getInstance().getBlocks())
 						for (Block block2 : Factory.getInstance().getBlocks())
-							if (block1!=block2 && block1.getBounds().intersects(block2.getBounds())) {
+							if (block1!=block2 && !block1.isOnTheFloor() && !block2.isOnTheFloor() && block1.getBounds().intersects(block2.getBounds())) {
 								block1.undoStep(); 
 								block2.undoStep();
 							}
@@ -269,6 +288,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 				}
 			}
 		}).start();
+	}
+
+	protected int getFloorTime() {
+		return floorTime;
 	}
 
 	public static Factory getInstance() {

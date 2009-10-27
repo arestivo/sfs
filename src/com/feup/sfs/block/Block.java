@@ -40,6 +40,9 @@ public class Block {
 	private long duration;
 	private long currentWork = 0;
 	
+	private boolean onTheFloor = false;
+	private int timeOnTheFloor = 0;
+	
 	public Block(Factory factory, int type, double centerX, double centerY) {
 		this.factory = factory;
 		this.type = type;
@@ -72,6 +75,10 @@ public class Block {
 	}
 	
 	public void doStep(){
+		if (onTheFloor) {
+			timeOnTheFloor += getFactory().getSimulationTime();
+			return;
+		}
 		oldCenterX = getCenterX();
 		oldCenterY = getCenterY();
 		if (moveLeft) setCenterX(getCenterX() - getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000);
@@ -116,6 +123,7 @@ public class Block {
 
 	public Rectangle getBounds() {
 		double blockSize = factory.getBlockSize();
+		if (onTheFloor) blockSize /= 2;
 		double pixelSize = factory.getPixelSize();
 		int x = (int) ((getCenterX() - blockSize/2)/pixelSize);
 		int y = (int) ((getCenterY() - blockSize/2)/pixelSize);
@@ -181,5 +189,17 @@ public class Block {
 		if (type == 0) {nextType = -1; return;}
 		if (Math.abs(currentWork - duration) < duration / 10) {type = nextType; nextType = -1; currentWork = 0;}
 		else if (currentWork > duration + duration / 10) {type = 0; nextType = -1; currentWork = 0;}
+	}
+
+	public void setOnTheFloor(boolean onTheFloor) {
+		this.onTheFloor = onTheFloor;
+	}
+
+	public boolean isOnTheFloor() {
+		return onTheFloor;
+	}
+
+	public int getTimeOnTheFloor() {
+		return timeOnTheFloor;
 	}
 }
