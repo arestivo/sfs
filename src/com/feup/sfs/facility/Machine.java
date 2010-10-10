@@ -33,6 +33,8 @@ import com.feup.sfs.modbus.ModbusSlave;
 
 public class Machine extends Conveyor {
 	private double rot = 300;
+	private double tx = 0;
+	private double ty = 0;
 	private boolean wasWorking = false;
 	
 	int tools[] = new int[3];
@@ -46,8 +48,19 @@ public class Machine extends Conveyor {
 		
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R-
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R+
+	
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//Tool
 		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //Tool Sensor
+
+		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//X-
+		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//X+
+		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //X- Sensor
+		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //X+ Sensor
+
+		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//Y-
+		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//Y+
+		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //Y- Sensor
+		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //Y+ Sensor
 		
 		wasWorking = false;
 	}
@@ -56,17 +69,29 @@ public class Machine extends Conveyor {
 	public void paint(Graphics g) {
 		super.paint(g);
 				
-		paintLight(g, false, 0, getDigitalOut(2), 1);
+		paintLight(g, false, 0, getDigitalOut(2), 1);		
 		paintLight(g, true, 1, getDigitalIn(1), 1);
 		paintLight(g, false, 2, getDigitalOut(3), 1);
 		paintLight(g, false, 3, getDigitalOut(4), 1);
-	}
+
+		paintLight(g, false, 0, getDigitalOut(5), 7);
+		paintLight(g, false, 3, getDigitalOut(6), 7);
+		paintLight(g, true, 1, getDigitalIn(2), 7);
+		paintLight(g, true, 2, getDigitalIn(3), 7);
+
+		paintLight(g, false, 0, getDigitalOut(7), 8);
+		paintLight(g, false, 3, getDigitalOut(8), 8);
+		paintLight(g, true, 1, getDigitalIn(4), 8);
+		paintLight(g, true, 2, getDigitalIn(5), 8);
+}
 	
 	@Override
 	public void paintTop(Graphics g) {
 		Rectangle bounds = getBounds();
 		int centerX = bounds.x + bounds.width / 2;
 		int centerY = bounds.y + bounds.height / 2;
+		int dFront = (int) (tx / getFactory().getPixelSize());
+		int dSide = (int) (ty / getFactory().getPixelSize());
 		int mWidth = (int) (1.5 / getFactory().getPixelSize()); 
 		int mHeight = (int) (0.4 / getFactory().getPixelSize()); 
 		int toolSize = (int) (0.3 / getFactory().getPixelSize()); 
@@ -80,14 +105,14 @@ public class Machine extends Conveyor {
 		if (orientation == Direction.VERTICAL) {
 			if (isToolWorking()) g.setColor(Color.green); else g.setColor(Color.darkGray);
 			g.fillRect(bounds.x - mHeight * 3, centerY - mHeight *2, mWidth * 2 / 3, mWidth);	// Base
-			g.fillRect(bounds.x - mHeight, centerY - mHeight / 2, bounds.width / 2 + mHeight / 2, mHeight);	// Arm
-			g.fillRect(centerX - mHeight / 2, centerY - mWidth / 2, mHeight, mWidth);	// Tools
+			g.fillRect(bounds.x - mHeight, dSide + centerY - mHeight / 2, bounds.width / 2 + mHeight / 2 + dFront, mHeight);	// Arm
+			g.fillRect(dFront + centerX - mHeight / 2, dSide + centerY - mWidth / 2, mHeight, mWidth);	// Tools
 			g.setColor(getFactory().getToolColor(tools[0]));
-			if (sine1 > 0) g.fillOval(centerX - toolSize / 2, (int) ((centerY - toolSize / 2) + mWidth * cosine1 / 2), (int)(toolSize + toolSize * sine1 / 3), (int)(toolSize + toolSize * sine1 / 3));
+			if (sine1 > 0) g.fillOval(dFront + centerX - toolSize / 2, (int) ((dSide + centerY - toolSize / 2) + mWidth * cosine1 / 2), (int)(toolSize + toolSize * sine1 / 3), (int)(toolSize + toolSize * sine1 / 3));
 			g.setColor(getFactory().getToolColor(tools[1]));
-			if (sine2 > 0) g.fillOval(centerX - toolSize / 2, (int) ((centerY - toolSize / 2) + mWidth * cosine2 / 2), (int)(toolSize + toolSize * sine2 / 3), (int)(toolSize + toolSize * sine2 / 3));
+			if (sine2 > 0) g.fillOval(dFront +centerX - toolSize / 2, (int) ((dSide + centerY - toolSize / 2) + mWidth * cosine2 / 2), (int)(toolSize + toolSize * sine2 / 3), (int)(toolSize + toolSize * sine2 / 3));
 			g.setColor(getFactory().getToolColor(tools[2]));
-			if (sine3 > 0) g.fillOval(centerX - toolSize / 2, (int) ((centerY - toolSize / 2) + mWidth * cosine3 / 2), (int)(toolSize + toolSize * sine3 / 3), (int)(toolSize + toolSize * sine3 / 3));
+			if (sine3 > 0) g.fillOval(dFront +centerX - toolSize / 2, (int) ((dSide + centerY - toolSize / 2) + mWidth * cosine3 / 2), (int)(toolSize + toolSize * sine3 / 3), (int)(toolSize + toolSize * sine3 / 3));
 		}
 
 		if (orientation == Direction.HORIZONTAL) {
@@ -110,6 +135,7 @@ public class Machine extends Conveyor {
 
 	@Override
 	public void doStep(boolean conveyorBlocked) {
+		if (facilityError) return;
 		if (isToolWorking()) {
 			wasWorking = true;
 			ArrayList<Block> blocks = getFactory().getBlocks();
@@ -141,6 +167,36 @@ public class Machine extends Conveyor {
 		if (isRotatingAntiClockWise()) rot += getFactory().getToolRotationSpeed()*getFactory().getSimulationTime()/1000;
 		if (rot > 360) rot-= 360;
 		if (rot < 0) rot+= 360;
+
+		boolean forcing = false;
+
+		if (isMovingFront()) {
+			tx += 1 / getFactory().getToolMoveSpeed();
+			if (tx >= 0.5) {tx = 0.5; forcing = true;}
+		}
+
+		if (isMovingBack()) {
+			tx -= 1 / getFactory().getToolMoveSpeed();
+			if (tx <= -0.5) {tx = -0.5; forcing = true;}
+		}
+
+		if (tx == -0.5) setDigitalIn(1, true); else setDigitalIn(1, false);
+		if (tx == 0.5) setDigitalIn(2, true); else setDigitalIn(2, false);
+
+		if (isMovingRight()) {
+			ty += 1 / getFactory().getToolMoveSpeed();
+			if (ty >= 0.5) {ty = 0.5; forcing = true;}
+		}
+
+		if (isMovingLeft()) {
+			ty -= 1 / getFactory().getToolMoveSpeed();
+			if (ty <= -0.5) {ty = -0.5; forcing = true;}
+		}
+
+		if (ty == -0.5) setDigitalIn(3, true); else setDigitalIn(3, false);
+		if (ty == 0.5) setDigitalIn(4, true); else setDigitalIn(4, false);
+		
+		isForcing(forcing);
 		
 		if (inPlaceTool(0)) setDigitalIn(1, true);
 		else if (inPlaceTool(1)) setDigitalIn(1, true);
@@ -157,6 +213,22 @@ public class Machine extends Conveyor {
 		return false;
 	}
 
+	private boolean isMovingFront() {
+		return getDigitalOut(5) && !getDigitalOut(6);
+	}
+
+	private boolean isMovingBack() {
+		return getDigitalOut(6) && !getDigitalOut(5);
+	}
+
+	private boolean isMovingLeft() {
+		return getDigitalOut(7) && !getDigitalOut(8);
+	}
+
+	private boolean isMovingRight() {
+		return getDigitalOut(8) && !getDigitalOut(7);
+	}
+	
 	private boolean isRotatingClockWise() {
 		return getDigitalOut(2) && !getDigitalOut(3);
 	}
@@ -187,6 +259,10 @@ public class Machine extends Conveyor {
 		actions.add("Rotate +");
 		actions.add("Rotate -");
 		actions.add("Tool");
+		actions.add("X+");
+		actions.add("X-");
+		actions.add("Z+");
+		actions.add("Z-");
 		return actions;
 	}
 
@@ -195,6 +271,10 @@ public class Machine extends Conveyor {
 		if (actionName.equals("Rotate +")) setDigitalOut(2, !getDigitalOut(2));
 		if (actionName.equals("Rotate -")) setDigitalOut(3, !getDigitalOut(3));
 		if (actionName.equals("Tool")) setDigitalOut(4, !getDigitalOut(4));
+		if (actionName.equals("X+")) setDigitalOut(5, !getDigitalOut(5));
+		if (actionName.equals("X-")) setDigitalOut(6, !getDigitalOut(6));
+		if (actionName.equals("Z+")) setDigitalOut(7, !getDigitalOut(7));
+		if (actionName.equals("Z-")) setDigitalOut(8, !getDigitalOut(8));
 		super.doAction(actionName);
 	}
 

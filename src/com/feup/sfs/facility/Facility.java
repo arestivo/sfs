@@ -83,13 +83,13 @@ public abstract class Facility {
 	
 	public abstract Rectangle getBounds();
 
-	protected void paintLight(Graphics g, boolean type, int position,
-			boolean value, int line) {
-				int x = position * 8 + 2;
-				int y = line * 8 + 2;
+	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
+				double pixelSize = Factory.getInstance().getPixelSize();
+				int x = (int) ((position + 0.5) * .4/pixelSize);
+				int y = (int) ((line + 0.5) * .4/pixelSize);
 				if (value) g.setColor(Color.green); else g.setColor(Color.red);
-				if (type) g.fillOval(getBounds().x + x, getBounds().y + y, 5, 5);
-				else g.fillRect(getBounds().x + x, getBounds().y + y, 5, 5);
+				if (type) g.fillOval(getBounds().x + x, getBounds().y + y, (int)(.3/pixelSize), (int)(.3/pixelSize));
+				else g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.3/pixelSize), (int)(.3/pixelSize));
 			}
 	
 	protected void isForcing(boolean forcing) {

@@ -201,6 +201,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			double rotationSpeed = new Double(properties.getProperty("configuration.rotationspeed")).doubleValue();
 			double pushSpeed = new Double(properties.getProperty("configuration.pushspeed")).doubleValue();
 			double toolRotationSpeed = new Double(properties.getProperty("configuration.toolrotationspeed")).doubleValue();
+			double toolMoveSpeed = new Double(properties.getProperty("configuration.toolrotationspeed")).doubleValue();
 			int simulationTime = new Integer(properties.getProperty("configuration.simulationtime")).intValue();
 			int errorTime = new Integer(properties.getProperty("configuration.errortime")).intValue();
 			int floorTime = new Integer(properties.getProperty("configuration.floortime")).intValue();
@@ -461,6 +462,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	}
 	
 	public double getToolRotationSpeed() {
+		return toolRotationSpeed;
+	}
+
+	public double getToolMoveSpeed() {
 		return toolRotationSpeed;
 	}
 	
