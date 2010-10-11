@@ -85,11 +85,11 @@ public abstract class Facility {
 
 	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
 				double pixelSize = Factory.getInstance().getPixelSize();
-				int x = (int) ((position + 0.5) * .4/pixelSize);
-				int y = (int) ((line + 0.5) * .4/pixelSize);
+				int x = (int) ((position + 0.5) * .2/pixelSize);
+				int y = (int) ((line + 0.5) * .2/pixelSize);
 				if (value) g.setColor(Color.green); else g.setColor(Color.red);
-				if (type) g.fillOval(getBounds().x + x, getBounds().y + y, (int)(.3/pixelSize), (int)(.3/pixelSize));
-				else g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.3/pixelSize), (int)(.3/pixelSize));
+				if (type) g.fillOval(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
+				else g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
 			}
 	
 	protected void isForcing(boolean forcing) {

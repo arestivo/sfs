@@ -87,6 +87,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private int floorTime;
 
 	private double toolRotationSpeed;
+	private double toolMoveSpeed;
 
 	private String floorColor;
 	
@@ -101,7 +102,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	private static PlayBack playback = null;
 	private static Random rng = new Random();
 	
-	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, int floorTime, double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile) throws FileNotFoundException {
+	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, int floorTime, double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile, double toolMoveSpeed) throws FileNotFoundException {
 		this.width = width;
 		this.heigth = heigth;
 		this.blockSize = blockSize;
@@ -115,6 +116,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		this.toolRotationSpeed = toolRotationSpeed;
 		this.floorColor = floorColor;
 		this.pushSpeed = pushSpeed;
+		this.toolMoveSpeed = toolMoveSpeed;
 		if (recordFile != null) recorder = new Recorder(recordFile);
 		if (playbackFile != null) playback = new PlayBack(playbackFile);
 		Factory.instance = this;
@@ -201,7 +203,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			double rotationSpeed = new Double(properties.getProperty("configuration.rotationspeed")).doubleValue();
 			double pushSpeed = new Double(properties.getProperty("configuration.pushspeed")).doubleValue();
 			double toolRotationSpeed = new Double(properties.getProperty("configuration.toolrotationspeed")).doubleValue();
-			double toolMoveSpeed = new Double(properties.getProperty("configuration.toolrotationspeed")).doubleValue();
+			double toolMoveSpeed = new Double(properties.getProperty("configuration.toolmovespeed")).doubleValue();
 			int simulationTime = new Integer(properties.getProperty("configuration.simulationtime")).intValue();
 			int errorTime = new Integer(properties.getProperty("configuration.errortime")).intValue();
 			int floorTime = new Integer(properties.getProperty("configuration.floortime")).intValue();
@@ -211,7 +213,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			String floorColor = properties.getProperty("floor.color");
 			if (floorColor == null) floorColor = "DDDDDD";
 			
-			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, floorTime, toolRotationSpeed, pushSpeed, floorColor, recordFile, playbackFile);
+			final Factory factory = new Factory(width, height, blockSize, pixelSize, simulationTime, conveyorSpeed, sensorRadius, rotationSpeed, errorTime, floorTime, toolRotationSpeed, pushSpeed, floorColor, recordFile, playbackFile, toolMoveSpeed);
 			ToolTipManager.sharedInstance().registerComponent(factory);
 
 			ModbusSlave.init(port, loopback);
@@ -466,7 +468,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	}
 
 	public double getToolMoveSpeed() {
-		return toolRotationSpeed;
+		return toolMoveSpeed;
 	}
 	
 	public int getErrorTime() {

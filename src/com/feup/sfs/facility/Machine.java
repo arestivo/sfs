@@ -74,15 +74,15 @@ public class Machine extends Conveyor {
 		paintLight(g, false, 2, getDigitalOut(3), 1);
 		paintLight(g, false, 3, getDigitalOut(4), 1);
 
-		paintLight(g, false, 0, getDigitalOut(5), 7);
-		paintLight(g, false, 3, getDigitalOut(6), 7);
-		paintLight(g, true, 1, getDigitalIn(2), 7);
-		paintLight(g, true, 2, getDigitalIn(3), 7);
-
-		paintLight(g, false, 0, getDigitalOut(7), 8);
-		paintLight(g, false, 3, getDigitalOut(8), 8);
-		paintLight(g, true, 1, getDigitalIn(4), 8);
-		paintLight(g, true, 2, getDigitalIn(5), 8);
+		paintLight(g, false, 0, getDigitalOut(5), 2);
+		paintLight(g, false, 3, getDigitalOut(6), 2);
+		paintLight(g, true, 1, getDigitalIn(2), 2);
+		paintLight(g, true, 2, getDigitalIn(3), 2);
+	
+		paintLight(g, false, 0, getDigitalOut(7), 3);
+		paintLight(g, false, 3, getDigitalOut(8), 3);
+		paintLight(g, true, 1, getDigitalIn(4), 3);
+		paintLight(g, true, 2, getDigitalIn(5), 3);
 }
 	
 	@Override
@@ -117,15 +117,15 @@ public class Machine extends Conveyor {
 
 		if (orientation == Direction.HORIZONTAL) {
 			if (isToolWorking()) g.setColor(Color.green); else g.setColor(Color.darkGray);
-			g.fillRect(centerX - mHeight * 2, bounds.y - mHeight * 3, mWidth, mWidth * 2 / 3);	// Arm
-			g.fillRect(centerX - mHeight / 2, bounds.y - mHeight, mHeight, bounds.height / 2 + mHeight / 2);	// Arm
-			g.fillRect(centerX - mWidth / 2, centerY - mHeight / 2, mWidth, mHeight);	// Tools
+			g.fillRect(centerX - mHeight * 2, bounds.y - mHeight * 3, mWidth, mWidth * 2 / 3);	// Base
+			g.fillRect(centerX - mHeight / 2, bounds.y - mHeight, mHeight, dFront + bounds.height / 2 + mHeight / 2);	// Arm
+			g.fillRect(dSide + centerX - mWidth / 2, dFront + centerY - mHeight / 2, mWidth, mHeight);	// Tools
 			g.setColor(getFactory().getToolColor(tools[0]));
-			if (sine1 > 0) g.fillOval((int) (centerX - toolSize / 2 + mWidth * cosine1 / 2), centerY - toolSize / 2, (int)(toolSize + toolSize * sine1 / 3), (int)(toolSize + toolSize * sine1 / 3));
+			if (sine1 > 0) g.fillOval((int) (dSide + centerX - toolSize / 2 + mWidth * cosine1 / 2), dFront + centerY - toolSize / 2, (int)(toolSize + toolSize * sine1 / 3), (int)(toolSize + toolSize * sine1 / 3));
 			g.setColor(getFactory().getToolColor(tools[1]));
-			if (sine2 > 0) g.fillOval((int) (centerX - toolSize / 2 + mWidth * cosine2 / 2), centerY - toolSize / 2, (int)(toolSize + toolSize * sine2 / 3), (int)(toolSize + toolSize * sine2 / 3));
+			if (sine2 > 0) g.fillOval((int) (dSide + centerX - toolSize / 2 + mWidth * cosine2 / 2), dFront + centerY - toolSize / 2, (int)(toolSize + toolSize * sine2 / 3), (int)(toolSize + toolSize * sine2 / 3));
 			g.setColor(getFactory().getToolColor(tools[2]));
-			if (sine3 > 0) g.fillOval((int) (centerX - toolSize / 2 + mWidth * cosine3 / 2), centerY - toolSize / 2, (int)(toolSize + toolSize * sine3 / 3), (int)(toolSize + toolSize * sine3 / 3));
+			if (sine3 > 0) g.fillOval((int) (dSide + centerX - toolSize / 2 + mWidth * cosine3 / 2), dFront + centerY - toolSize / 2, (int)(toolSize + toolSize * sine3 / 3), (int)(toolSize + toolSize * sine3 / 3));
 		}		
 	}
 
@@ -171,12 +171,12 @@ public class Machine extends Conveyor {
 		boolean forcing = false;
 
 		if (isMovingFront()) {
-			tx += 1 / getFactory().getToolMoveSpeed();
+			tx += 1 * getFactory().getToolMoveSpeed();
 			if (tx >= 0.5) {tx = 0.5; forcing = true;}
 		}
 
 		if (isMovingBack()) {
-			tx -= 1 / getFactory().getToolMoveSpeed();
+			tx -= 1 * getFactory().getToolMoveSpeed();
 			if (tx <= -0.5) {tx = -0.5; forcing = true;}
 		}
 
@@ -184,12 +184,12 @@ public class Machine extends Conveyor {
 		if (tx == 0.5) setDigitalIn(2, true); else setDigitalIn(2, false);
 
 		if (isMovingRight()) {
-			ty += 1 / getFactory().getToolMoveSpeed();
+			ty += 1 * getFactory().getToolMoveSpeed();
 			if (ty >= 0.5) {ty = 0.5; forcing = true;}
 		}
 
 		if (isMovingLeft()) {
-			ty -= 1 / getFactory().getToolMoveSpeed();
+			ty -= 1 * getFactory().getToolMoveSpeed();
 			if (ty <= -0.5) {ty = -0.5; forcing = true;}
 		}
 
@@ -246,10 +246,10 @@ public class Machine extends Conveyor {
 	}
 	
 	@Override
-	public int getNumberDigitalIns() {return 2;}
+	public int getNumberDigitalIns() {return 6;}
 
 	@Override
-	public int getNumberDigitalOuts() {return 5;}
+	public int getNumberDigitalOuts() {return 9;}
 
 	@Override
 	public Collection<String> getActions() {
