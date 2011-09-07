@@ -32,6 +32,7 @@ public class WarehouseIn extends Conveyor{
 	public WarehouseIn(Properties properties, int id)	throws FactoryInitializationException {
 		super(properties, id);
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
+		
 		addDigitalOut(new SimpleDigitalOut(false));
 	}
 
