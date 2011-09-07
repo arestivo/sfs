@@ -22,24 +22,40 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 public class BlockType {
+	public enum SHAPE {CIRCLE, SQUARE, ROUNDED_SQUARE};
+
 	private String name;
 	private Color color;
+	private SHAPE shape;
 	private int id;
 	
 	private static Hashtable<Integer, BlockType> types = new Hashtable<Integer, BlockType>();
 	
-	public BlockType(int id, String name, Color color) {
+	public BlockType(int id, String name, Color color, SHAPE shape) {
 		setId(id);
 		setName(name);
 		setColor(color);
+		setShape(shape);
 	}
 
-	public static void addType(int id, String name, String color){
-		BlockType type = new BlockType(id, name, Color.decode("0x"+color));
+	private void setShape(SHAPE shape) {
+		this.shape = shape;		
+	}
+
+	public static void addType(int id, String name, String color, String shapeName){
+		SHAPE shape;
+		if (shapeName.equals("circle")) shape = SHAPE.CIRCLE;
+		else if (shapeName.equals("square")) shape = SHAPE.SQUARE;
+		else shape = SHAPE.ROUNDED_SQUARE;
+		BlockType type = new BlockType(id, name, Color.decode("0x"+color), shape);
 		types.put(new Integer(id), type);
 	}
 	
 	public static BlockType getBlockType(int id){
+		if (!types.containsKey(new Integer(id))) {
+			BlockType defunct = new BlockType(-1, "Defunct", Color.black, SHAPE.ROUNDED_SQUARE);
+			return defunct;
+		}
 		return types.get(new Integer(id));
 	}
 	
@@ -77,10 +93,15 @@ public class BlockType {
 			BlockType type = elements.nextElement();
 			if (type.getName().equalsIgnoreCase(name)) return type;
 		}
-		return null;
+		BlockType defunct = new BlockType(-1, "Defunct", Color.black, SHAPE.ROUNDED_SQUARE);
+		return defunct;
 	}
 
 	public static Collection<BlockType> getBlockTypes() {
 		return types.values();		
+	}
+
+	public SHAPE getShape() {
+		return shape;
 	}
 }

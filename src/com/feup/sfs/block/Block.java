@@ -19,6 +19,8 @@ package com.feup.sfs.block;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+
+import com.feup.sfs.block.BlockType.SHAPE;
 import com.feup.sfs.factory.Factory;
 
 public class Block {
@@ -94,13 +96,23 @@ public class Block {
 
 	private Color getColor(int id) {
 		BlockType type = BlockType.getBlockType(id);
-		if (type == null) return Color.black;
 		return type.getColor();
 	}
 	
 	public void paint(Graphics g) {
 		g.setColor(getColor(type));
-		g.fillOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+		
+		SHAPE shape = BlockType.getBlockType(type).getShape();
+
+		switch (shape) {
+			case ROUNDED_SQUARE:
+				g.fillRoundRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height, getBounds().width / 2, getBounds().height / 2); break;
+			case SQUARE:
+				g.fillRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
+			case CIRCLE:
+				g.fillOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
+		}
+
 		if (nextType != -1) {
 			g.setColor(Color.red);
 			g.drawOval(getBounds().x - 1, getBounds().y - 1, getBounds().width + 2, getBounds().height + 2);
@@ -116,9 +128,14 @@ public class Block {
 		}
 		
 		g.setColor(Color.black);
-		g.drawOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
-		
-		
+		switch (shape) {
+			case ROUNDED_SQUARE:
+				g.drawRoundRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height, getBounds().width / 2, getBounds().height / 2); break;
+			case SQUARE:
+				g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
+			case CIRCLE:
+				g.drawOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
+		}
 	}
 
 	public Rectangle getBounds() {

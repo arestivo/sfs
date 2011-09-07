@@ -340,7 +340,8 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			if (properties.getProperty("blocktype."+id+".name")==null) break;
 			String name = properties.getProperty("blocktype."+id+".name");
 			String color = properties.getProperty("blocktype."+id+".color");
-			BlockType.addType(id, name, color);
+			String shape = properties.getProperty("blocktype."+id+".shape", "rounded");
+			BlockType.addType(id, name, color, shape);
 			id++;
 		}
 	}
