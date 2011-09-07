@@ -30,6 +30,8 @@ public class WarehouseOut extends Conveyor{
 	
 	public WarehouseOut(Properties properties, int id)	throws FactoryInitializationException {
 		super(properties, id);
+		this.name = "Warehouse Out";
+		
 		addRegister(new SimpleInputRegister(0), "Warehouse Out");
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
 		this.lastValue = 0;
@@ -48,10 +50,5 @@ public class WarehouseOut extends Conveyor{
 			if (block.getDistanceTo(getCenterX(), getCenterY()) < Factory.getInstance().getBlockSize()) return false;
 		} 
 		return true;
-	}
-	
-	@Override
-	public String getName() {
-		return "Warehouse Out";
 	}
 }

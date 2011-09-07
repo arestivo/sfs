@@ -31,6 +31,8 @@ public class WarehouseIn extends Conveyor{
 	
 	public WarehouseIn(Properties properties, int id)	throws FactoryInitializationException {
 		super(properties, id);
+		this.name = "WarehouseIn";
+		
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
 		
 		addDigitalOut(new SimpleDigitalOut(false), "Warehouse In");
@@ -55,10 +57,5 @@ public class WarehouseIn extends Conveyor{
 
 	private boolean isInOn() {
 		return getDigitalOut(2);
-	}
-
-	@Override
-	public String getName() {
-		return "Warehouse In";
 	}
 }

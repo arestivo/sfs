@@ -19,6 +19,7 @@ public class Rail extends Conveyor {
 	
 	public Rail(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
+		this.name = "Rail";
 
 		setRailSize(new Integer(properties.getProperty("facility."+id+".rail.size")).intValue());
 		
@@ -107,11 +108,6 @@ public class Rail extends Conveyor {
 
 	private boolean isRailMovingRight() {
 		return getDigitalOut(3) && !getDigitalOut(2);
-	}
-
-	@Override
-	public String getName() {
-		return "Rail";
 	}
 
 	public void setRailSize(int railSize) {

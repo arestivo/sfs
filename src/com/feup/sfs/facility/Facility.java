@@ -42,7 +42,9 @@ public abstract class Facility {
 	
 	private int timeForcing;
 	
-	protected boolean facilityError; 
+	protected boolean facilityError;
+
+	protected String name; 
 	
 	public Factory getFactory(){
 		return Factory.getInstance();
@@ -114,10 +116,16 @@ public abstract class Facility {
 	}
 
 	public String getType() {
-		return "#" + getId() + " " + getName() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
+		return "#" + getId() + " " + getName() + getMessage() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
 	}
 
-	public abstract String getName();
+	public String getName() {
+		return name;
+	}
+
+	public String getMessage() {
+		return "";
+	}
 	
 	protected void addDigitalOut(SimpleDigitalOut simpleDigitalOut, String name) {
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(simpleDigitalOut);

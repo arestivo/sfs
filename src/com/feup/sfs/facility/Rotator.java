@@ -34,6 +34,7 @@ public class Rotator extends Conveyor {
 	
 	public Rotator(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
+		this.name = "Rotator";
 		
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate -");
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate +");
@@ -115,10 +116,5 @@ public class Rotator extends Conveyor {
 		if (!rotated) return orientation;
 		if (orientation == Direction.VERTICAL) return Direction.HORIZONTAL;
 		else return Direction.VERTICAL;
-	}
-	
-	@Override
-	public String getName() {
-		return "Rotator";
 	}
 }

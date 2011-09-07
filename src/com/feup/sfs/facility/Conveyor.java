@@ -43,6 +43,7 @@ public class Conveyor extends Facility{
 	
 	public Conveyor(Properties properties, int id) throws FactoryInitializationException {
 		super(id);
+		this.name = "Conveyor";
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());
@@ -184,10 +185,5 @@ public class Conveyor extends Facility{
 
 	public double getCenterY() {
 		return centerY;
-	}
-
-	@Override
-	public String getName() {
-		return "Conveyor";
 	}
 }

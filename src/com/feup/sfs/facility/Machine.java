@@ -39,6 +39,7 @@ public class Machine extends Conveyor {
 	
 	public Machine(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
+		this.name = "Machine";
 		
 		tools[0] = new Integer(properties.getProperty("facility." + id + ".tool1")).intValue();
 		tools[1] = new Integer(properties.getProperty("facility." + id + ".tool2")).intValue();
@@ -236,10 +237,10 @@ public class Machine extends Conveyor {
 	}
 	
 	@Override
-	public String getName() {
-		if (inPlaceTool(0)) return "Machine (T1:"+tools[0]+") " + Factory.getInstance().getTransformations(tools[0]);
-		if (inPlaceTool(1)) return "Machine (T2:"+tools[1]+") " + Factory.getInstance().getTransformations(tools[1]);
-		if (inPlaceTool(2)) return "Machine (T3:"+tools[2]+") " + Factory.getInstance().getTransformations(tools[2]);
-		return "Machine";
+	public String getMessage() {
+		if (inPlaceTool(0)) return " (T1:"+tools[0]+") " + Factory.getInstance().getTransformations(tools[0]);
+		else if (inPlaceTool(1)) return " (T2:"+tools[1]+") " + Factory.getInstance().getTransformations(tools[1]);
+		else if (inPlaceTool(2)) return " (T3:"+tools[2]+") " + Factory.getInstance().getTransformations(tools[2]);
+		else return "";
 	}
 }

@@ -34,6 +34,7 @@ public class Pusher extends Conveyor {
 	
 	public Pusher(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
+		this.name = "Pusher";
 		
 		if (properties.containsKey("facility."+id+".invert") && properties.getProperty("facility."+id+".invert").equals("true"))
 			invert = true;
@@ -130,10 +131,5 @@ public class Pusher extends Conveyor {
 
 	private boolean isRetracting() {
 		return getDigitalOut(2);
-	}
-		
-	@Override
-	public String getName() {
-		return "Pusher";
 	}
 }
