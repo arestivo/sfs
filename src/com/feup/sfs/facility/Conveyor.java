@@ -30,7 +30,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
-import com.feup.sfs.modbus.ModbusSlave;
 
 public class Conveyor extends Facility{
 	public enum Direction {VERTICAL, HORIZONTAL}
@@ -57,13 +56,14 @@ public class Conveyor extends Facility{
 			orientation = Direction.HORIZONTAL;
 		else throw new FactoryInitializationException("No such orientation " + properties.getProperty("facility."+id+".orientation"));
 		
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false)); //M+
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false)); //M-
+		addDigitalOut(new SimpleDigitalOut(false)); //M+
+		addDigitalOut(new SimpleDigitalOut(false)); //M-
 		
 		for (int i = 0; i < sensors; i++)
-			ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // piece sensor
+			addDigitalIn(new SimpleDigitalIn(false)); // piece sensor
 	}
 	
+
 	@Override
 	public void paint(Graphics g){
 		g.setColor(Color.lightGray);
@@ -192,15 +192,6 @@ public class Conveyor extends Facility{
 		return "Conveyor";
 	}
 	
-	@Override
-	public int getNumberDigitalIns() {return sensors;}
-
-	@Override
-	public int getNumberDigitalOuts() {return 2;}
-	
-	@Override
-	public int getNumberRegisters() {return 0;}
-
 	@Override
 	public Collection<String> getActions() {
 		ArrayList<String> actions = new ArrayList<String>();

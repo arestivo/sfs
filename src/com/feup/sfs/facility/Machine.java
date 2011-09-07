@@ -29,7 +29,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.factory.Factory;
-import com.feup.sfs.modbus.ModbusSlave;
 
 public class Machine extends Conveyor {
 	private double rot = 300;
@@ -46,21 +45,21 @@ public class Machine extends Conveyor {
 		tools[1] = new Integer(properties.getProperty("facility." + id + ".tool2")).intValue();
 		tools[2] = new Integer(properties.getProperty("facility." + id + ".tool3")).intValue();
 		
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R-
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R+
+		addDigitalOut(new SimpleDigitalOut(false));//R-
+		addDigitalOut(new SimpleDigitalOut(false));//R+
 	
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//Tool
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //Tool Sensor
+		addDigitalOut(new SimpleDigitalOut(false));//Tool
+		addDigitalIn(new SimpleDigitalIn(false));  //Tool Sensor
 
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//X-
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//X+
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //X- Sensor
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //X+ Sensor
+		addDigitalOut(new SimpleDigitalOut(false));//X-
+		addDigitalOut(new SimpleDigitalOut(false));//X+
+		addDigitalIn(new SimpleDigitalIn(false));  //X- Sensor
+		addDigitalIn(new SimpleDigitalIn(false));  //X+ Sensor
 
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//Y-
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//Y+
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //Y- Sensor
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false));  //Y+ Sensor
+		addDigitalOut(new SimpleDigitalOut(false));//Y-
+		addDigitalOut(new SimpleDigitalOut(false));//Y+
+		addDigitalIn(new SimpleDigitalIn(false));  //Y- Sensor
+		addDigitalIn(new SimpleDigitalIn(false));  //Y+ Sensor
 		
 		wasWorking = false;
 	}
@@ -245,12 +244,6 @@ public class Machine extends Conveyor {
 		return "Machine";
 	}
 	
-	@Override
-	public int getNumberDigitalIns() {return sensors + 5;}
-
-	@Override
-	public int getNumberDigitalOuts() {return 9;}
-
 	@Override
 	public Collection<String> getActions() {
 		ArrayList<String> actions = new ArrayList<String>();

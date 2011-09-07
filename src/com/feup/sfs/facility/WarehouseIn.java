@@ -23,7 +23,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.factory.Factory;
-import com.feup.sfs.modbus.ModbusSlave;
 import com.feup.sfs.warehouse.Warehouse;
 
 public class WarehouseIn extends Conveyor{
@@ -33,7 +32,7 @@ public class WarehouseIn extends Conveyor{
 	public WarehouseIn(Properties properties, int id)	throws FactoryInitializationException {
 		super(properties, id);
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));
+		addDigitalOut(new SimpleDigitalOut(false));
 	}
 
 	public void doStep(boolean conveyorBlocked){
@@ -61,7 +60,4 @@ public class WarehouseIn extends Conveyor{
 	public String getName() {
 		return "Warehouse In";
 	}
-
-	@Override
-	public int getNumberDigitalOuts() {return 3;}	
 }

@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
+import net.wimpi.modbus.procimg.SimpleInputRegister;
 
 import com.feup.sfs.factory.Factory;
 import com.feup.sfs.modbus.ModbusSlave;
@@ -30,9 +31,13 @@ import com.feup.sfs.modbus.ModbusSlave;
 public abstract class Facility {
 	private int id;
 	
-	protected int digitalOutStart;
-	protected int digitalInStart;
+	private int digitalOutStart;
+	private int digitalInStart;
 	private int registerStart;
+
+	private int digitalOutEnd;
+	private int digitalInEnd;
+	private int registerEnd;
 	
 	private int timeForcing;
 	
@@ -48,7 +53,11 @@ public abstract class Facility {
 		digitalInStart = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
 		digitalOutStart = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
 		registerStart = ModbusSlave.getSimpleProcessImage().getRegisterCount();
-		
+
+		digitalInEnd = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
+		digitalOutEnd = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
+		registerEnd = ModbusSlave.getSimpleProcessImage().getRegisterCount();
+
 		timeForcing = 0;
 		facilityError = false;
 	}
@@ -109,21 +118,28 @@ public abstract class Facility {
 
 	public abstract String getName();
 	
-	public abstract int getNumberDigitalIns();
-	public abstract int getNumberDigitalOuts();
-	public abstract int getNumberRegisters();
-
-	public int getFirstDigitalIn() {
-		return digitalInStart;
+	protected void addDigitalOut(SimpleDigitalOut simpleDigitalOut) {
+		ModbusSlave.getSimpleProcessImage().addDigitalOut(simpleDigitalOut);
+		digitalOutEnd++;
 	}
 
-	public int getFirstDigitalOut() {
-		return digitalOutStart;
+	protected void addDigitalIn(SimpleDigitalIn simpleDigitalIn) {
+		ModbusSlave.getSimpleProcessImage().addDigitalIn(simpleDigitalIn);
+		digitalInEnd++;
 	}
-	
-	public int getFirstRegister() {
-		return registerStart;
+
+	protected void addRegister(SimpleInputRegister simpleInputRegister) {
+		ModbusSlave.getSimpleProcessImage().addRegister(simpleInputRegister);
+		digitalOutEnd++;
 	}
+
+	public int getNumberDigitalIns() { return digitalInEnd - digitalInStart; }
+	public int getNumberDigitalOuts() {	return digitalOutEnd - digitalOutStart; }
+	public int getNumberRegisters() { return registerEnd - registerStart; }
+
+	public int getFirstDigitalIn() { return digitalInStart; }
+	public int getFirstDigitalOut() { return digitalOutStart; }
+	public int getFirstRegister() {	return registerStart; }
 
 	public abstract Collection<String> getActions();
 

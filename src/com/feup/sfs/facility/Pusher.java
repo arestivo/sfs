@@ -28,7 +28,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
-import com.feup.sfs.modbus.ModbusSlave;
 
 public class Pusher extends Conveyor {
 	protected double currentPushPosition = 0;
@@ -40,10 +39,10 @@ public class Pusher extends Conveyor {
 		if (properties.containsKey("facility."+id+".invert") && properties.getProperty("facility."+id+".invert").equals("true"))
 			invert = true;
 		
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R-
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R+
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
+		addDigitalOut(new SimpleDigitalOut(false));//R-
+		addDigitalOut(new SimpleDigitalOut(false));//R+
+		addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
+		addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
 	}
 	
 	public void paint(Graphics g){
@@ -138,12 +137,6 @@ public class Pusher extends Conveyor {
 	public String getName() {
 		return "Pusher";
 	}
-
-	@Override
-	public int getNumberDigitalIns() {return sensors + 2;}
-
-	@Override
-	public int getNumberDigitalOuts() {return 4;}
 
 	@Override
 	public Collection<String> getActions() {

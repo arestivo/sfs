@@ -13,7 +13,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
-import com.feup.sfs.modbus.ModbusSlave;
 
 public class Rail extends Conveyor {
 	private int railSize;
@@ -26,10 +25,10 @@ public class Rail extends Conveyor {
 		
 		railPosition = -railSize / 2;
 		
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R-
-		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false));//R+
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
+		addDigitalOut(new SimpleDigitalOut(false));//R-
+		addDigitalOut(new SimpleDigitalOut(false));//R+
+		addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
+		addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
 	}
 	
 	private void paintConveyor(Graphics g){
@@ -115,12 +114,6 @@ public class Rail extends Conveyor {
 	public String getName() {
 		return "Rail";
 	}
-
-	@Override
-	public int getNumberDigitalIns() {return sensors + 2;}
-
-	@Override
-	public int getNumberDigitalOuts() {return 4;}
 
 	public void setRailSize(int railSize) {
 		this.railSize = railSize;
