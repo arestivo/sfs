@@ -90,7 +90,7 @@ public abstract class Facility {
 				if (value) g.setColor(Color.green); else g.setColor(Color.red);
 				if (type) g.fillOval(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
 				else g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
-			}
+	}
 	
 	protected void isForcing(boolean forcing) {
 		if (facilityError) return;
