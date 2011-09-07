@@ -88,8 +88,9 @@ public abstract class Facility {
 				int x = (int) ((position + 0.5) * .2/pixelSize);
 				int y = (int) ((line + 0.5) * .2/pixelSize);
 				if (value) g.setColor(Color.green); else g.setColor(Color.red);
-				if (type) g.fillOval(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
-				else g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
+				g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.1/pixelSize), (int)(.1/pixelSize));
+				g.setColor(Color.black);
+				if (type) g.drawRect(getBounds().x + x - 1, getBounds().y + y - 1, (int)(.1/pixelSize) + 1, (int)(.1/pixelSize) + 1);
 	}
 	
 	protected void isForcing(boolean forcing) {
