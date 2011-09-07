@@ -3,6 +3,7 @@ package com.feup.sfs.facility;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -34,8 +35,8 @@ public class Rail extends Conveyor {
 	private void paintConveyor(Graphics g){
 		super.paint(g);
 		paintLight(g, false, 0, getDigitalOut(2), 1);
-		paintLight(g, true, 1, getDigitalIn(1), 1);
-		paintLight(g, true, 2, getDigitalIn(2), 1);
+		paintLight(g, true, 1, getDigitalIn(sensors), 1);
+		paintLight(g, true, 2, getDigitalIn(sensors + 1), 1);
 		paintLight(g, false, 3, getDigitalOut(3), 1);
 	}
 	
@@ -62,15 +63,19 @@ public class Rail extends Conveyor {
 	}
 
 	@Override
+	public Point2D.Double getSensorPosition(int i) {
+		if (getOrientation()==Direction.VERTICAL) return getSensorPosition(i, railPosition, 0);
+		else return getSensorPosition(i, 0, railPosition);
+	}
+	
+	@Override
 	public void doStep(boolean conveyorBlocked){
 		boolean movedLeft = false;
 		boolean movedRight = false;
 		if (facilityError) return;
 		boolean forcing = false;
-		if (getOrientation() == Direction.VERTICAL)
-			super.doStep(isRailMovingLeft() || isRailMovingLeft(), getCenterX() + railPosition, getCenterY());
-		else
-			super.doStep(isRailMovingLeft() || isRailMovingLeft(), getCenterX(), getCenterY() + railPosition);
+
+		super.doStep(isRailMovingLeft() || isRailMovingLeft());
 		
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
 		
@@ -80,8 +85,8 @@ public class Rail extends Conveyor {
 		if (railPosition < -railSize / 2) {railPosition = -railSize / 2; forcing = true; movedLeft = false;}
 		if (railPosition > railSize / 2) {railPosition = railSize / 2; forcing = true; movedRight = false;}
 		
-		if (railPosition <= -railSize / 2) setDigitalIn(1, true); else setDigitalIn(1, false);
-		if (railPosition >= railSize / 2) setDigitalIn(2, true); else setDigitalIn(2, false);
+		if (railPosition <= -railSize / 2) setDigitalIn(sensors, true); else setDigitalIn(sensors, false);
+		if (railPosition >= railSize / 2) setDigitalIn(sensors + 1, true); else setDigitalIn(sensors + 1, false);
 		
 		if (movedLeft || movedRight) {
 			ArrayList<Block> blocks = getFactory().getBlocks();
@@ -112,7 +117,7 @@ public class Rail extends Conveyor {
 	}
 
 	@Override
-	public int getNumberDigitalIns() {return 3;}
+	public int getNumberDigitalIns() {return sensors + 2;}
 
 	@Override
 	public int getNumberDigitalOuts() {return 4;}

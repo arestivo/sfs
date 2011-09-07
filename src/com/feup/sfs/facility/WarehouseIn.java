@@ -63,10 +63,5 @@ public class WarehouseIn extends Conveyor{
 	}
 
 	@Override
-	public int getNumberDigitalIns() {return 1;}
-
-	@Override
-	public int getNumberDigitalOuts() {return 3;}
-
-	
+	public int getNumberDigitalOuts() {return 3;}	
 }

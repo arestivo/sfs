@@ -18,7 +18,9 @@ package com.feup.sfs.facility;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -74,8 +76,8 @@ public class Conveyor extends Facility{
 		g.setColor(Color.orange);
 		
 		for (int i = 0; i < sensors; i++) {
-			if (getOrientation()==Direction.HORIZONTAL) g.fillRect(bounds.x + bounds.width / (sensors + 1) - 2 + i * bounds.width / (sensors + 1), bounds.y + bounds.height / 2 - 2, 4, 4);
-			if (getOrientation()==Direction.VERTICAL) g.fillRect(bounds.x + bounds.width /2 - 2, bounds.y + bounds.height / (sensors + 1) - 2+ i * bounds.height / (sensors + 1), 4, 4);
+			Point sp = getSensorBounds(i);
+			g.fillRect(sp.x - 2, sp.y - 2, 4, 4);
 		}
 		
 		paintLight(g, false, 0, isMotorPlusOn(), 0);
@@ -88,13 +90,9 @@ public class Conveyor extends Facility{
 
 	@Override
 	public void doStep(boolean conveyorBlocked){
-		doStep(conveyorBlocked, getCenterX(), getCenterY());
-	}
-	
-	public void doStep(boolean conveyorBlocked, double sensorX, double sensorY){
 		if (facilityError) return;
 		ArrayList<Block> blocks = getFactory().getBlocks();
-		boolean middleSensor = false;
+		boolean middleSensor[] = new boolean[sensors];
 		for (Block block : blocks) {
 			if (!conveyorBlocked && getBounds().intersects(block.getBounds())){
 
@@ -103,10 +101,13 @@ public class Conveyor extends Facility{
 				if (isRunningTop()) block.setMoveTop(true);
 				if (isRunningBottom()) block.setMoveBottom(true);
 			}
-			if (block.getDistanceTo(sensorX, sensorY) < getFactory().getSensorRadius()) 
-				middleSensor = true;
+			for (int i = 0; i < sensors; i++) {
+				Point2D.Double sp = getSensorPosition(i);
+				if (block.getDistanceTo(sp.x, sp.y) < getFactory().getSensorRadius()) 
+					middleSensor[i] = true;
+			}
 		}
-		setDigitalIn(0, middleSensor);
+		for (int i = 0; i < sensors; i++) setDigitalIn(i, middleSensor[i]);
 	}
 	
 	public boolean isRunningLeft(){
@@ -151,6 +152,21 @@ public class Conveyor extends Facility{
 		return new Rectangle(x, y, w, h);
 	}
 	
+	public Point getSensorBounds(int i) {
+		Point2D.Double sp = getSensorPosition(i);
+		double pixelSize = getFactory().getPixelSize();
+		return new Point((int)(sp.x/pixelSize), (int)(sp.y/pixelSize));
+	}
+
+	public Point2D.Double getSensorPosition(int i) {
+		return getSensorPosition(i, 0, 0);
+	}
+
+	public Point2D.Double getSensorPosition(int i, double dispX, double dispY) {
+		if (getOrientation()==Direction.HORIZONTAL) return new Point2D.Double(dispX + getCenterX() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2, dispY + getCenterY());
+		else return new Point2D.Double(dispX + getCenterX(), dispY + getCenterY() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2);
+	}
+	
 	public Direction getOrientation(){
 		return orientation;
 	}
@@ -177,7 +193,7 @@ public class Conveyor extends Facility{
 	}
 	
 	@Override
-	public int getNumberDigitalIns() {return 1;}
+	public int getNumberDigitalIns() {return sensors;}
 
 	@Override
 	public int getNumberDigitalOuts() {return 2;}

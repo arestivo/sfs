@@ -70,19 +70,19 @@ public class Machine extends Conveyor {
 		super.paint(g);
 				
 		paintLight(g, false, 0, getDigitalOut(2), 1);		
-		paintLight(g, true, 1, getDigitalIn(1), 1);
+		paintLight(g, true, 1, getDigitalIn(sensors), 1);
 		paintLight(g, false, 2, getDigitalOut(3), 1);
 		paintLight(g, false, 3, getDigitalOut(4), 1);
 
 		paintLight(g, false, 0, getDigitalOut(5), 2);
 		paintLight(g, false, 3, getDigitalOut(6), 2);
-		paintLight(g, true, 1, getDigitalIn(2), 2);
-		paintLight(g, true, 2, getDigitalIn(3), 2);
+		paintLight(g, true, 1, getDigitalIn(sensors + 1), 2);
+		paintLight(g, true, 2, getDigitalIn(sensors + 2), 2);
 	
 		paintLight(g, false, 0, getDigitalOut(7), 3);
 		paintLight(g, false, 3, getDigitalOut(8), 3);
-		paintLight(g, true, 1, getDigitalIn(4), 3);
-		paintLight(g, true, 2, getDigitalIn(5), 3);
+		paintLight(g, true, 1, getDigitalIn(sensors + 3), 3);
+		paintLight(g, true, 2, getDigitalIn(sensors + 4), 3);
 }
 	
 	@Override
@@ -180,8 +180,8 @@ public class Machine extends Conveyor {
 			if (tx <= -0.5) {tx = -0.5; forcing = true;}
 		}
 
-		if (tx == -0.5) setDigitalIn(1, true); else setDigitalIn(1, false);
-		if (tx == 0.5) setDigitalIn(2, true); else setDigitalIn(2, false);
+		if (tx == -0.5) setDigitalIn(sensors + 1, true); else setDigitalIn(sensors + 1, false);
+		if (tx == 0.5) setDigitalIn(sensors + 2, true); else setDigitalIn(sensors + 2, false);
 
 		if (isMovingRight()) {
 			ty += 1 * getFactory().getToolMoveSpeed();
@@ -193,15 +193,15 @@ public class Machine extends Conveyor {
 			if (ty <= -0.5) {ty = -0.5; forcing = true;}
 		}
 
-		if (ty == -0.5) setDigitalIn(3, true); else setDigitalIn(3, false);
-		if (ty == 0.5) setDigitalIn(4, true); else setDigitalIn(4, false);
+		if (ty == -0.5) setDigitalIn(sensors + 3, true); else setDigitalIn(sensors + 3, false);
+		if (ty == 0.5) setDigitalIn(sensors + 4, true); else setDigitalIn(sensors + 4, false);
 		
 		isForcing(forcing);
 		
-		if (inPlaceTool(0)) setDigitalIn(1, true);
-		else if (inPlaceTool(1)) setDigitalIn(1, true);
-		else if (inPlaceTool(2)) setDigitalIn(1, true);
-		else setDigitalIn(1, false);
+		if (inPlaceTool(0)) setDigitalIn(sensors, true);
+		else if (inPlaceTool(1)) setDigitalIn(sensors, true);
+		else if (inPlaceTool(2)) setDigitalIn(sensors, true);
+		else setDigitalIn(sensors, false);
 		
 
 	}
@@ -246,7 +246,7 @@ public class Machine extends Conveyor {
 	}
 	
 	@Override
-	public int getNumberDigitalIns() {return 6;}
+	public int getNumberDigitalIns() {return sensors + 5;}
 
 	@Override
 	public int getNumberDigitalOuts() {return 9;}

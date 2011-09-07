@@ -66,8 +66,8 @@ public class Rotator extends Conveyor {
 		}
 		
 		paintLight(g, false, 0, getDigitalOut(2), 1);
-		paintLight(g, true, 1, getDigitalIn(1), 1);
-		paintLight(g, true, 2, getDigitalIn(2), 1);
+		paintLight(g, true, 1, getDigitalIn(sensors), 1);
+		paintLight(g, true, 2, getDigitalIn(sensors + 1), 1);
 		paintLight(g, false, 3, getDigitalOut(3), 1);
 	}
 	
@@ -84,8 +84,8 @@ public class Rotator extends Conveyor {
 			currentRotation -= getFactory().getRotationSpeed()*getFactory().getSimulationTime()/1000;
 			if (currentRotation <= 0) {currentRotation = 0; setRotated(false); forcing = true;}
 		}
-		if (currentRotation == 0) setDigitalIn(1, true); else setDigitalIn(1, false);
-		if (currentRotation == 90) setDigitalIn(2, true); else setDigitalIn(2, false);
+		if (currentRotation == 0) setDigitalIn(sensors, true); else setDigitalIn(sensors, false);
+		if (currentRotation == 90) setDigitalIn(sensors + 1, true); else setDigitalIn(sensors + 1, false);
 		isForcing(forcing);
 	}
 
@@ -125,7 +125,7 @@ public class Rotator extends Conveyor {
 	}
 
 	@Override
-	public int getNumberDigitalIns() {return 3;}
+	public int getNumberDigitalIns() {return sensors + 2;}
 
 	@Override
 	public int getNumberDigitalOuts() {return 4;}

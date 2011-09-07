@@ -76,8 +76,8 @@ public class Pusher extends Conveyor {
 		}
 		
 		paintLight(g, false, 0, getDigitalOut(2), 1);
-		paintLight(g, true, 1, getDigitalIn(1), 1);
-		paintLight(g, true, 2, getDigitalIn(2), 1);
+		paintLight(g, true, 1, getDigitalIn(sensors), 1);
+		paintLight(g, true, 2, getDigitalIn(sensors + 1), 1);
 		paintLight(g, false, 3, getDigitalOut(3), 1);
 	}
 
@@ -111,8 +111,8 @@ public class Pusher extends Conveyor {
 			currentPushPosition -= getFactory().getPushSpeed() * getFactory().getSimulationTime() / 1000.0;
 			if (currentPushPosition < 0) {currentPushPosition = 0; forcing = true;}
 		}
-		if (currentPushPosition == 0)   setDigitalIn(1, true); else setDigitalIn(1, false);
-		if (currentPushPosition == width) setDigitalIn(2, true); else setDigitalIn(2, false);
+		if (currentPushPosition == 0)   setDigitalIn(sensors, true); else setDigitalIn(sensors, false);
+		if (currentPushPosition == width) setDigitalIn(sensors + 1, true); else setDigitalIn(sensors + 1, false);
 		
 		ArrayList<Block> blocks = getFactory().getBlocks();
 		for (Block block : blocks) {
@@ -140,7 +140,7 @@ public class Pusher extends Conveyor {
 	}
 
 	@Override
-	public int getNumberDigitalIns() {return 3;}
+	public int getNumberDigitalIns() {return sensors + 2;}
 
 	@Override
 	public int getNumberDigitalOuts() {return 4;}
