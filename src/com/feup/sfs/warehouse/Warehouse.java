@@ -134,7 +134,7 @@ public class Warehouse {
 			else if (orders.get(0) instanceof OrderIn) {
 				OrderIn o = (OrderIn) orders.get(0);
 				if (o.removeTime(Factory.getInstance().getSimulationTime())) {
-					if (o.getIn().isSensorActive()) {
+					if (o.getIn().isSensorActive(0)) {
 						Block b = Factory.getInstance().getBlockAt(o.getIn().getBounds().x + o.getIn().getBounds().width / 2, o.getIn().getBounds().y + o.getIn().getBounds().height / 2);
 						if (b!=null) {
 							Factory.getInstance().removeBlock(b);

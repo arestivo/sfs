@@ -57,7 +57,9 @@ public class Conveyor extends Facility{
 		
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false)); //M+
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(new SimpleDigitalOut(false)); //M-
-		ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // middle sensor
+		
+		for (int i = 0; i < sensors; i++)
+			ModbusSlave.getSimpleProcessImage().addDigitalIn(new SimpleDigitalIn(false)); // piece sensor
 	}
 	
 	@Override
@@ -70,11 +72,18 @@ public class Conveyor extends Facility{
 		g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		
 		g.setColor(Color.orange);
-		g.fillRect(bounds.x + bounds.width / 2 - 2, bounds.y + bounds.height / 2 - 2, 4, 4);
+		
+		for (int i = 0; i < sensors; i++) {
+			if (getOrientation()==Direction.HORIZONTAL) g.fillRect(bounds.x + bounds.width / (sensors + 1) - 2 + i * bounds.width / (sensors + 1), bounds.y + bounds.height / 2 - 2, 4, 4);
+			if (getOrientation()==Direction.VERTICAL) g.fillRect(bounds.x + bounds.width /2 - 2, bounds.y + bounds.height / (sensors + 1) - 2+ i * bounds.height / (sensors + 1), 4, 4);
+		}
 		
 		paintLight(g, false, 0, isMotorPlusOn(), 0);
-		paintLight(g, true, 1, isSensorActive(), 0);
-		paintLight(g, false, 2, isMotorMinusOn(), 0);
+		
+		for (int i = 0; i < sensors; i++)
+			paintLight(g, true, 1 + i, isSensorActive(i), 0);
+		
+		paintLight(g, false, 1 + sensors, isMotorMinusOn(), 0);
 	}
 
 	@Override
@@ -116,8 +125,8 @@ public class Conveyor extends Facility{
 		return getOrientation() == Direction.VERTICAL && !isMotorPlusOn() && isMotorMinusOn();
 	}
 	
-	public boolean isSensorActive(){
-		return getDigitalIn(0);
+	public boolean isSensorActive(int i){
+		return getDigitalIn(i);
 	}
 	
 	public boolean isMoving(){
