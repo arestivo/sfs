@@ -33,7 +33,7 @@ public class WarehouseIn extends Conveyor{
 		super(properties, id);
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
 		
-		addDigitalOut(new SimpleDigitalOut(false));
+		addDigitalOut(new SimpleDigitalOut(false), "Warehouse In");
 	}
 
 	public void doStep(boolean conveyorBlocked){

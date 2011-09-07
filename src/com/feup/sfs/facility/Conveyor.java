@@ -22,7 +22,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -56,11 +55,11 @@ public class Conveyor extends Facility{
 			orientation = Direction.HORIZONTAL;
 		else throw new FactoryInitializationException("No such orientation " + properties.getProperty("facility."+id+".orientation"));
 		
-		addDigitalOut(new SimpleDigitalOut(false)); //M+
-		addDigitalOut(new SimpleDigitalOut(false)); //M-
+		addDigitalOut(new SimpleDigitalOut(false), "Motor +");
+		addDigitalOut(new SimpleDigitalOut(false), "Motor -");
 		
 		for (int i = 0; i < sensors; i++)
-			addDigitalIn(new SimpleDigitalIn(false)); // piece sensor
+			addDigitalIn(new SimpleDigitalIn(false), "Sensor " + i);
 	}
 	
 
@@ -190,19 +189,5 @@ public class Conveyor extends Facility{
 	@Override
 	public String getName() {
 		return "Conveyor";
-	}
-	
-	@Override
-	public Collection<String> getActions() {
-		ArrayList<String> actions = new ArrayList<String>();
-		actions.add("Motor +");
-		actions.add("Motor -");
-		return actions;
-	}
-
-	@Override
-	public void doAction(String actionName) {
-		if (actionName.equals("Motor +")) setDigitalOut(0, !getDigitalOut(0));
-		if (actionName.equals("Motor -")) setDigitalOut(1, !getDigitalOut(1));
 	}
 }

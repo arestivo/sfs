@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -39,10 +38,10 @@ public class Pusher extends Conveyor {
 		if (properties.containsKey("facility."+id+".invert") && properties.getProperty("facility."+id+".invert").equals("true"))
 			invert = true;
 		
-		addDigitalOut(new SimpleDigitalOut(false));//R-
-		addDigitalOut(new SimpleDigitalOut(false));//R+
-		addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
-		addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
+		addDigitalOut(new SimpleDigitalOut(false), "Push -");
+		addDigitalOut(new SimpleDigitalOut(false), "Push +");
+		addDigitalIn(new SimpleDigitalIn(false), "Push - Sensor");	
+		addDigitalIn(new SimpleDigitalIn(false), "Push + Sensor");	
 	}
 	
 	public void paint(Graphics g){
@@ -137,22 +136,4 @@ public class Pusher extends Conveyor {
 	public String getName() {
 		return "Pusher";
 	}
-
-	@Override
-	public Collection<String> getActions() {
-		ArrayList<String> actions = new ArrayList<String>();
-		actions.add("Motor +");
-		actions.add("Motor -");
-		actions.add("Push +");
-		actions.add("Push -");
-		return actions;
-	}
-
-	@Override
-	public void doAction(String actionName) {
-		if (actionName.equals("Push +")) setDigitalOut(3, !getDigitalOut(3));
-		if (actionName.equals("Push -")) setDigitalOut(2, !getDigitalOut(2));
-		super.doAction(actionName);
-	}
-
 }

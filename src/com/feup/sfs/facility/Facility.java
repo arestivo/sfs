@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
@@ -31,13 +32,13 @@ import com.feup.sfs.modbus.ModbusSlave;
 public abstract class Facility {
 	private int id;
 	
-	private int digitalOutStart;
-	private int digitalInStart;
-	private int registerStart;
+	private int digitalOutStart, digitalOutEnd;
+	private int digitalInStart, digitalInEnd;
+	private int registerStart, registerEnd;
 
-	private int digitalOutEnd;
-	private int digitalInEnd;
-	private int registerEnd;
+	private LinkedList<String> digitalOutNames = new LinkedList<String>();
+	private LinkedList<String> digitalInNames = new LinkedList<String>();
+	private LinkedList<String> registerNames = new LinkedList<String>();
 	
 	private int timeForcing;
 	
@@ -118,18 +119,21 @@ public abstract class Facility {
 
 	public abstract String getName();
 	
-	protected void addDigitalOut(SimpleDigitalOut simpleDigitalOut) {
+	protected void addDigitalOut(SimpleDigitalOut simpleDigitalOut, String name) {
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(simpleDigitalOut);
+		digitalOutNames.add(name);
 		digitalOutEnd++;
 	}
 
-	protected void addDigitalIn(SimpleDigitalIn simpleDigitalIn) {
+	protected void addDigitalIn(SimpleDigitalIn simpleDigitalIn, String name) {
 		ModbusSlave.getSimpleProcessImage().addDigitalIn(simpleDigitalIn);
+		digitalInNames.add(name);
 		digitalInEnd++;
 	}
 
-	protected void addRegister(SimpleInputRegister simpleInputRegister) {
+	protected void addRegister(SimpleInputRegister simpleInputRegister, String name) {
 		ModbusSlave.getSimpleProcessImage().addRegister(simpleInputRegister);
+		registerNames.add(name);
 		digitalOutEnd++;
 	}
 
@@ -141,9 +145,18 @@ public abstract class Facility {
 	public int getFirstDigitalOut() { return digitalOutStart; }
 	public int getFirstRegister() {	return registerStart; }
 
-	public abstract Collection<String> getActions();
+	public final Collection<String> getActions() {
+		return digitalOutNames;
+	}
 
-	public abstract void doAction(String actionName);
+	public final void doAction(String actionName) {
+		int out = getDigitalOutForName(actionName);
+		setDigitalOut(out, !getDigitalOut(out));
+	}
+
+	private int getDigitalOutForName(String actionName) {
+		return digitalOutNames.indexOf(actionName);
+	}
 
 	public void stop() {
 		int ndo = getNumberDigitalOuts();

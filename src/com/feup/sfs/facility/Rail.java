@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -25,10 +24,10 @@ public class Rail extends Conveyor {
 		
 		railPosition = -railSize / 2;
 		
-		addDigitalOut(new SimpleDigitalOut(false));//R-
-		addDigitalOut(new SimpleDigitalOut(false));//R+
-		addDigitalIn(new SimpleDigitalIn(false)); // R- Sensor	
-		addDigitalIn(new SimpleDigitalIn(false)); // R+ Sensor	
+		addDigitalOut(new SimpleDigitalOut(false), "Rail -");
+		addDigitalOut(new SimpleDigitalOut(false), "Rail +");
+		addDigitalIn(new SimpleDigitalIn(false), "Rail - Sensor");	
+		addDigitalIn(new SimpleDigitalIn(false), "Rail + Sensor");	
 	}
 	
 	private void paintConveyor(Graphics g){
@@ -121,23 +120,6 @@ public class Rail extends Conveyor {
 
 	public int getRailSize() {
 		return railSize;
-	}
-
-	@Override
-	public Collection<String> getActions() {
-		ArrayList<String> actions = new ArrayList<String>();
-		actions.add("Motor +");
-		actions.add("Motor -");
-		actions.add("Slide +");
-		actions.add("Slide -");
-		return actions;
-	}
-
-	@Override
-	public void doAction(String actionName) {
-		if (actionName.equals("Slide +")) setDigitalOut(3, !getDigitalOut(3));
-		if (actionName.equals("Slide -")) setDigitalOut(2, !getDigitalOut(2));
-		super.doAction(actionName);
 	}
 		
 	@Override

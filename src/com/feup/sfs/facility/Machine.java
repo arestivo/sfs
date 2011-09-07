@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -45,21 +44,21 @@ public class Machine extends Conveyor {
 		tools[1] = new Integer(properties.getProperty("facility." + id + ".tool2")).intValue();
 		tools[2] = new Integer(properties.getProperty("facility." + id + ".tool3")).intValue();
 		
-		addDigitalOut(new SimpleDigitalOut(false));//R-
-		addDigitalOut(new SimpleDigitalOut(false));//R+
+		addDigitalOut(new SimpleDigitalOut(false), "Rotate -");
+		addDigitalOut(new SimpleDigitalOut(false), "Rotate +");
 	
-		addDigitalOut(new SimpleDigitalOut(false));//Tool
-		addDigitalIn(new SimpleDigitalIn(false));  //Tool Sensor
+		addDigitalOut(new SimpleDigitalOut(false), "Tool");
+		addDigitalIn(new SimpleDigitalIn(false), "Tool Sensor");
 
-		addDigitalOut(new SimpleDigitalOut(false));//X-
-		addDigitalOut(new SimpleDigitalOut(false));//X+
-		addDigitalIn(new SimpleDigitalIn(false));  //X- Sensor
-		addDigitalIn(new SimpleDigitalIn(false));  //X+ Sensor
+		addDigitalOut(new SimpleDigitalOut(false), "Y -");
+		addDigitalOut(new SimpleDigitalOut(false), "Y +");
+		addDigitalIn(new SimpleDigitalIn(false), "Y - Sensor");
+		addDigitalIn(new SimpleDigitalIn(false), "Y + Sensor");
 
-		addDigitalOut(new SimpleDigitalOut(false));//Y-
-		addDigitalOut(new SimpleDigitalOut(false));//Y+
-		addDigitalIn(new SimpleDigitalIn(false));  //Y- Sensor
-		addDigitalIn(new SimpleDigitalIn(false));  //Y+ Sensor
+		addDigitalOut(new SimpleDigitalOut(false), "Z -");
+		addDigitalOut(new SimpleDigitalOut(false), "Z +");
+		addDigitalIn(new SimpleDigitalIn(false), "Z - Sensor");
+		addDigitalIn(new SimpleDigitalIn(false), "Z + Sensor");
 		
 		wasWorking = false;
 	}
@@ -243,32 +242,4 @@ public class Machine extends Conveyor {
 		if (inPlaceTool(2)) return "Machine (T3:"+tools[2]+") " + Factory.getInstance().getTransformations(tools[2]);
 		return "Machine";
 	}
-	
-	@Override
-	public Collection<String> getActions() {
-		ArrayList<String> actions = new ArrayList<String>();
-		actions.add("Motor +");
-		actions.add("Motor -");
-		actions.add("Rotate +");
-		actions.add("Rotate -");
-		actions.add("Tool");
-		actions.add("X+");
-		actions.add("X-");
-		actions.add("Z+");
-		actions.add("Z-");
-		return actions;
-	}
-
-	@Override
-	public void doAction(String actionName) {
-		if (actionName.equals("Rotate +")) setDigitalOut(2, !getDigitalOut(2));
-		if (actionName.equals("Rotate -")) setDigitalOut(3, !getDigitalOut(3));
-		if (actionName.equals("Tool")) setDigitalOut(4, !getDigitalOut(4));
-		if (actionName.equals("X+")) setDigitalOut(5, !getDigitalOut(5));
-		if (actionName.equals("X-")) setDigitalOut(6, !getDigitalOut(6));
-		if (actionName.equals("Z+")) setDigitalOut(7, !getDigitalOut(7));
-		if (actionName.equals("Z-")) setDigitalOut(8, !getDigitalOut(8));
-		super.doAction(actionName);
-	}
-
 }
