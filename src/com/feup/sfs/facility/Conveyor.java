@@ -37,6 +37,7 @@ public class Conveyor extends Facility{
 	private double centerY;
 	protected double length;
 	protected double width;
+	protected int sensors;
 	
 	protected Direction orientation;
 	
@@ -47,6 +48,7 @@ public class Conveyor extends Facility{
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());
 		length = new Double(properties.getProperty("facility."+id+".length")).doubleValue();
 		width = new Double(properties.getProperty("facility."+id+".width")).doubleValue();
+		sensors = new Integer(properties.getProperty("facility."+id+".sensors", "1")).intValue();
 		if (properties.getProperty("facility."+id+".orientation").equals("vertical"))
 			orientation = Direction.VERTICAL;
 		else if (properties.getProperty("facility."+id+".orientation").equals("horizontal"))
