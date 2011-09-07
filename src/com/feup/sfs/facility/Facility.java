@@ -19,6 +19,7 @@ package com.feup.sfs.facility;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -53,13 +54,9 @@ public abstract class Facility {
 	public Facility(int id){
 		this.id = id;
 		
-		digitalInStart = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
-		digitalOutStart = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
-		registerStart = ModbusSlave.getSimpleProcessImage().getRegisterCount();
-
-		digitalInEnd = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
-		digitalOutEnd = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
-		registerEnd = ModbusSlave.getSimpleProcessImage().getRegisterCount();
+		digitalInStart = digitalInEnd = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
+		digitalOutStart = digitalOutEnd = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
+		registerStart = registerEnd = ModbusSlave.getSimpleProcessImage().getRegisterCount();
 
 		timeForcing = 0;
 		facilityError = false;
@@ -142,7 +139,7 @@ public abstract class Facility {
 	protected void addRegister(SimpleInputRegister simpleInputRegister, String name) {
 		ModbusSlave.getSimpleProcessImage().addRegister(simpleInputRegister);
 		registerNames.add(name);
-		digitalOutEnd++;
+		registerEnd++;
 	}
 
 	public int getNumberDigitalIns() { return digitalInEnd - digitalInStart; }
@@ -169,5 +166,27 @@ public abstract class Facility {
 	public void stop() {
 		int ndo = getNumberDigitalOuts();
 		for (int i = 0; i < ndo; i++) setDigitalOut(i, false);
+	}
+
+	public void writeMap(PrintStream ps) {
+		ps.println("-----------------------------------------");
+		ps.println("Facility #" + getId() + " : " + getName());
+		ps.println("");
+		ps.println("  Digital Outs");
+		ps.println("  ------------");
+		for (int i = digitalOutStart; i < digitalOutEnd; i++)
+			ps.println ("   " + i + " : " + digitalOutNames.get(i - digitalOutStart));
+		ps.println("");
+		ps.println("  Digital Ins");
+		ps.println("  -----------");
+		for (int i = digitalInStart; i < digitalInEnd; i++)
+			ps.println ("   " + i + " : " + digitalInNames.get(i - digitalInStart));
+		if (registerStart != registerEnd) {
+			ps.println("");
+			ps.println("  Registers");
+			ps.println("  ---------");
+			for (int i = registerStart; i < registerEnd; i++)
+				ps.println ("   " + i + " : " + registerNames.get(i - registerStart));
+		}
 	}
 }

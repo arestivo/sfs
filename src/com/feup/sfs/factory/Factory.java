@@ -32,7 +32,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -229,6 +231,8 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 				System.out.println("Error creating factory: " + e.getMessage());
 				System.exit(1);
 			}
+			
+			if (args.length == 2 && args[0].equals("--map")) {saveMap(args[1]); System.exit(0);} 
 		
 		} catch (NumberFormatException e) {
 			System.out.println("Error creating factory: Wrong Number Format " + e.getMessage());
@@ -291,6 +295,19 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 				}
 			}
 		}).start();
+	}
+
+	private static void saveMap(String filename) {
+		try {
+			PrintStream ps = new PrintStream(new FileOutputStream(filename));
+			for (Facility facility : Factory.getInstance().getFacilities())
+				facility.writeMap(ps);
+			ps.println("-----------------------------------------");
+			ps.close();
+			System.out.println("Map saved to: " + filename);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	protected int getFloorTime() {
