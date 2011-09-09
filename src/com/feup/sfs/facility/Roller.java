@@ -50,7 +50,7 @@ public class Roller extends Facility{
 		length = new Double(properties.getProperty("facility."+id+".length")).doubleValue();
 		width = new Double(properties.getProperty("facility."+id+".width")).doubleValue();
 		sensors = new Integer(properties.getProperty("facility."+id+".sensors", "1")).intValue();
-		direction = new Integer(properties.getProperty("facility."+id+".sensors", "0")).intValue(); 
+		direction = new Integer(properties.getProperty("facility."+id+".direction", "0")).intValue(); 
 		if (properties.getProperty("facility."+id+".orientation").equals("vertical"))
 			orientation = Orientation.VERTICAL;
 		else if (properties.getProperty("facility."+id+".orientation").equals("horizontal"))
