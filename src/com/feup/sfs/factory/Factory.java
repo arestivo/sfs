@@ -235,6 +235,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			}
 			
 			if (args.length == 2 && args[0].equals("--map")) {saveMap(args[1]); System.exit(0);} 
+			if (args.length == 2 && args[0].equals("--csv")) {saveCsv(args[1]); System.exit(0);} 
 		
 		} catch (NumberFormatException e) {
 			System.out.println("Error creating factory: Wrong Number Format " + e.getMessage());
@@ -307,6 +308,18 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			ps.println("-----------------------------------------");
 			ps.close();
 			System.out.println("Map saved to: " + filename);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void saveCsv(String filename) {
+		try {
+			PrintStream ps = new PrintStream(new FileOutputStream(filename));
+			for (Facility facility : Factory.getInstance().getFacilities())
+				facility.writeCsv(ps);
+			ps.close();
+			System.out.println("CSV saved to: " + filename);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

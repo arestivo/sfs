@@ -189,4 +189,13 @@ public abstract class Facility {
 				ps.println ("   " + i + " : " + registerNames.get(i - registerStart));
 		}
 	}
+
+	public void writeCsv(PrintStream ps) {
+		for (int i = digitalOutStart; i < digitalOutEnd; i++)
+			ps.println (getId() + "," + getName() + ",O," + digitalOutNames.get(i - digitalOutStart) + "," + i);
+		for (int i = digitalInStart; i < digitalInEnd; i++)
+			ps.println (getId() + "," + getName() + ",I," + digitalInNames.get(i - digitalInStart) + "," + i);
+		for (int i = registerStart; i < registerEnd; i++)
+			ps.println (getId() + "," + getName() + ",R," + registerNames.get(i - registerStart) + "," + i);
+	}
 }
