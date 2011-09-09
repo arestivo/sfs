@@ -50,7 +50,7 @@ public class Rail extends Conveyor {
 		double pixelSize = getFactory().getPixelSize();
 		int railSize = (int) (this.railSize / pixelSize);
 		
-		if (getOrientation()==Direction.VERTICAL) {
+		if (getOrientation()==Orientation.VERTICAL) {
 			g.drawLine(bounds.x - railSize / 2 + bounds.width / 2, bounds.y + bounds.height / 4, bounds.x + railSize / 2 + bounds.width / 2, bounds.y + bounds.height / 4);
 			g.drawLine(bounds.x - railSize / 2 + bounds.width / 2, bounds.y + 3 * bounds.height / 4, bounds.x + railSize / 2 + bounds.width / 2 , bounds.y + 3 * bounds.height / 4);
 		} else {
@@ -63,7 +63,7 @@ public class Rail extends Conveyor {
 
 	@Override
 	public Point2D.Double getSensorPosition(int i) {
-		if (getOrientation()==Direction.VERTICAL) return getSensorPosition(i, railPosition, 0);
+		if (getOrientation()==Orientation.VERTICAL) return getSensorPosition(i, railPosition, 0);
 		else return getSensorPosition(i, 0, railPosition);
 	}
 	
@@ -91,10 +91,10 @@ public class Rail extends Conveyor {
 			ArrayList<Block> blocks = getFactory().getBlocks();
 			for (Block block : blocks) {
 				if (getBounds().intersects(block.getBounds())){
-					if (movedLeft && getOrientation()==Direction.VERTICAL) block.setMoveLeft(true);
-					if (movedRight && getOrientation()==Direction.VERTICAL) block.setMoveRight(true);
-					if (movedLeft && getOrientation()==Direction.HORIZONTAL) block.setMoveTop(true);
-					if (movedRight && getOrientation()==Direction.HORIZONTAL) block.setMoveBottom(true);
+					if (movedLeft && getOrientation()==Orientation.VERTICAL) block.setMoveLeft(true);
+					if (movedRight && getOrientation()==Orientation.VERTICAL) block.setMoveRight(true);
+					if (movedLeft && getOrientation()==Orientation.HORIZONTAL) block.setMoveTop(true);
+					if (movedRight && getOrientation()==Orientation.HORIZONTAL) block.setMoveBottom(true);
 				}
 			}
 		}
@@ -121,10 +121,10 @@ public class Rail extends Conveyor {
 	@Override
 	public Rectangle getBounds() {
 		double pixelSize = getFactory().getPixelSize();
-		int x = getOrientation()==Direction.VERTICAL?(int) (getCenterX()/pixelSize - width/2/pixelSize + railPosition/pixelSize):(int) (getCenterX()/pixelSize - length/2/pixelSize); 
-		int y = getOrientation()==Direction.VERTICAL?(int) (getCenterY()/pixelSize - length/2/pixelSize):(int) (getCenterY()/pixelSize - width/2/pixelSize + railPosition/pixelSize);
-		int w = getOrientation()==Direction.VERTICAL?(int) (width/pixelSize):(int) (length/pixelSize);
-		int h = getOrientation()==Direction.VERTICAL?(int) (length/pixelSize):(int) (width/pixelSize);
+		int x = getOrientation()==Orientation.VERTICAL?(int) (getCenterX()/pixelSize - width/2/pixelSize + railPosition/pixelSize):(int) (getCenterX()/pixelSize - length/2/pixelSize); 
+		int y = getOrientation()==Orientation.VERTICAL?(int) (getCenterY()/pixelSize - length/2/pixelSize):(int) (getCenterY()/pixelSize - width/2/pixelSize + railPosition/pixelSize);
+		int w = getOrientation()==Orientation.VERTICAL?(int) (width/pixelSize):(int) (length/pixelSize);
+		int h = getOrientation()==Orientation.VERTICAL?(int) (length/pixelSize):(int) (width/pixelSize);
 		return new Rectangle(x, y, w, h);
 	}
 }

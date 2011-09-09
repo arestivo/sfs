@@ -30,7 +30,7 @@ import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
 
 public class Roller extends Facility{
-	public enum Direction {VERTICAL, HORIZONTAL}
+	public enum Orientation {VERTICAL, HORIZONTAL}
 
 	private double centerX;
 	private double centerY;
@@ -38,7 +38,7 @@ public class Roller extends Facility{
 	protected double width;
 	protected int sensors;
 	
-	protected Direction orientation;
+	protected Orientation orientation;
 	private int direction = 0;
 	
 	public Roller(Properties properties, int id) throws FactoryInitializationException {
@@ -51,9 +51,9 @@ public class Roller extends Facility{
 		width = new Double(properties.getProperty("facility."+id+".width")).doubleValue();
 		sensors = new Integer(properties.getProperty("facility."+id+".sensors", "1")).intValue();
 		if (properties.getProperty("facility."+id+".orientation").equals("vertical"))
-			orientation = Direction.VERTICAL;
+			orientation = Orientation.VERTICAL;
 		else if (properties.getProperty("facility."+id+".orientation").equals("horizontal"))
-			orientation = Direction.HORIZONTAL;
+			orientation = Orientation.HORIZONTAL;
 		else throw new FactoryInitializationException("No such orientation " + properties.getProperty("facility."+id+".orientation"));
 				
 		for (int i = 0; i < sensors; i++)
@@ -103,19 +103,19 @@ public class Roller extends Facility{
 	}
 	
 	public boolean isRunningLeft(){
-		return getOrientation() == Direction.HORIZONTAL && direction  == 0;
+		return getOrientation() == Orientation.HORIZONTAL && direction  == 0;
 	}
 
 	public boolean isRunningRight(){
-		return getOrientation() == Direction.HORIZONTAL && direction == 1;
+		return getOrientation() == Orientation.HORIZONTAL && direction == 1;
 	}
 
 	public boolean isRunningTop(){
-		return getOrientation() == Direction.VERTICAL && direction == 0;
+		return getOrientation() == Orientation.VERTICAL && direction == 0;
 	}
 
 	public boolean isRunningBottom(){
-		return getOrientation() == Direction.VERTICAL && direction == 1;
+		return getOrientation() == Orientation.VERTICAL && direction == 1;
 	}
 	
 	public boolean isSensorActive(int i){
@@ -125,10 +125,10 @@ public class Roller extends Facility{
 	@Override
 	public Rectangle getBounds() {
 		double pixelSize = getFactory().getPixelSize();
-		int x = getOrientation()==Direction.VERTICAL?(int) (getCenterX()/pixelSize - width/2/pixelSize):(int) (getCenterX()/pixelSize - length/2/pixelSize); 
-		int y = getOrientation()==Direction.VERTICAL?(int) (getCenterY()/pixelSize - length/2/pixelSize):(int) (getCenterY()/pixelSize - width/2/pixelSize);
-		int w = getOrientation()==Direction.VERTICAL?(int) (width/pixelSize):(int) (length/pixelSize);
-		int h = getOrientation()==Direction.VERTICAL?(int) (length/pixelSize):(int) (width/pixelSize);
+		int x = getOrientation()==Orientation.VERTICAL?(int) (getCenterX()/pixelSize - width/2/pixelSize):(int) (getCenterX()/pixelSize - length/2/pixelSize); 
+		int y = getOrientation()==Orientation.VERTICAL?(int) (getCenterY()/pixelSize - length/2/pixelSize):(int) (getCenterY()/pixelSize - width/2/pixelSize);
+		int w = getOrientation()==Orientation.VERTICAL?(int) (width/pixelSize):(int) (length/pixelSize);
+		int h = getOrientation()==Orientation.VERTICAL?(int) (length/pixelSize):(int) (width/pixelSize);
 		return new Rectangle(x, y, w, h);
 	}
 	
@@ -143,11 +143,11 @@ public class Roller extends Facility{
 	}
 
 	public Point2D.Double getSensorPosition(int i, double dispX, double dispY) {
-		if (getOrientation()==Direction.HORIZONTAL) return new Point2D.Double(dispX + getCenterX() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2, dispY + getCenterY());
+		if (getOrientation()==Orientation.HORIZONTAL) return new Point2D.Double(dispX + getCenterX() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2, dispY + getCenterY());
 		else return new Point2D.Double(dispX + getCenterX(), dispY + getCenterY() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2);
 	}
 	
-	public Direction getOrientation(){
+	public Orientation getOrientation(){
 		return orientation;
 	}
 

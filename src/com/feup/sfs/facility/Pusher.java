@@ -54,7 +54,7 @@ public class Pusher extends Conveyor {
 		double pixelSize = getFactory().getPixelSize();
 		double blockSize = getFactory().getBlockSize() / pixelSize;
 
-		if (getOrientation()==Direction.VERTICAL) {
+		if (getOrientation()==Orientation.VERTICAL) {
 			int centerY = bounds.y + bounds.height / 2; 
 			if (!invert) {
 				g.fillRect((int)(bounds.x - blockSize / 4 + bounds.width * currentPushPosition / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
@@ -87,11 +87,11 @@ public class Pusher extends Conveyor {
 		int centerY = bounds.y + bounds.height / 2; 
 		int centerX = bounds.x + bounds.width / 2; 
 
-		if (getOrientation()==Direction.VERTICAL && !invert) 
+		if (getOrientation()==Orientation.VERTICAL && !invert) 
 			return new Rectangle((int)(bounds.x - blockSize / 4 + bounds.width * currentPushPosition / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
-		else if (getOrientation()==Direction.VERTICAL && invert) 
+		else if (getOrientation()==Orientation.VERTICAL && invert) 
 			return new Rectangle((int)(bounds.x + bounds.width * (width - currentPushPosition) / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
-		else if (getOrientation()==Direction.HORIZONTAL && !invert) 
+		else if (getOrientation()==Orientation.HORIZONTAL && !invert) 
 			return new Rectangle((int)(centerX - blockSize / 2), (int)(bounds.y - blockSize / 4 + bounds.height * currentPushPosition / width), (int)blockSize, (int)(blockSize / 4));
 		else 
 			return new Rectangle((int)(centerX - blockSize / 2), (int)(bounds.y + bounds.height * (width - currentPushPosition) / width), (int)blockSize, (int)(blockSize / 4));
@@ -116,10 +116,10 @@ public class Pusher extends Conveyor {
 		ArrayList<Block> blocks = getFactory().getBlocks();
 		for (Block block : blocks) {
 			if (getPusherBounds().intersects(block.getBounds())){
-				if (getOrientation()==Direction.VERTICAL && !invert) block.setMoveRight(true);
-				if (getOrientation()==Direction.VERTICAL && invert) block.setMoveLeft(true);
-				if (getOrientation()==Direction.HORIZONTAL && !invert) block.setMoveBottom(true);
-				if (getOrientation()==Direction.HORIZONTAL && invert) block.setMoveTop(true);
+				if (getOrientation()==Orientation.VERTICAL && !invert) block.setMoveRight(true);
+				if (getOrientation()==Orientation.VERTICAL && invert) block.setMoveLeft(true);
+				if (getOrientation()==Orientation.HORIZONTAL && !invert) block.setMoveBottom(true);
+				if (getOrientation()==Orientation.HORIZONTAL && invert) block.setMoveTop(true);
 			}
 		}
 		isForcing(forcing);

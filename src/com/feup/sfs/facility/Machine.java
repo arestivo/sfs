@@ -101,7 +101,7 @@ public class Machine extends Conveyor {
 		double sine3 = Math.sin((rot+210)*Math.PI/180);
 		double sine1 = Math.sin((rot-30)*Math.PI/180);
 
-		if (orientation == Direction.VERTICAL) {
+		if (orientation == Orientation.VERTICAL) {
 			if (isToolWorking()) g.setColor(Color.green); else g.setColor(Color.darkGray);
 			g.fillRect(bounds.x - mHeight * 3, centerY - mHeight *2, mWidth * 2 / 3, mWidth);	// Base
 			g.fillRect(bounds.x - mHeight, dSide + centerY - mHeight / 2, bounds.width / 2 + mHeight / 2 + dFront, mHeight);	// Arm
@@ -114,7 +114,7 @@ public class Machine extends Conveyor {
 			if (sine3 > 0) g.fillOval(dFront +centerX - toolSize / 2, (int) ((dSide + centerY - toolSize / 2) + mWidth * cosine3 / 2), (int)(toolSize + toolSize * sine3 / 3), (int)(toolSize + toolSize * sine3 / 3));
 		}
 
-		if (orientation == Direction.HORIZONTAL) {
+		if (orientation == Orientation.HORIZONTAL) {
 			if (isToolWorking()) g.setColor(Color.green); else g.setColor(Color.darkGray);
 			g.fillRect(centerX - mHeight * 2, bounds.y - mHeight * 3, mWidth, mWidth * 2 / 3);	// Base
 			g.fillRect(centerX - mHeight / 2, bounds.y - mHeight, mHeight, dFront + bounds.height / 2 + mHeight / 2);	// Arm

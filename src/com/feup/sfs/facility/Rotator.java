@@ -53,7 +53,7 @@ public class Rotator extends Conveyor {
 			double sine = Math.sin((double)currentRotation*Math.PI/180);
 			int length = Math.max(r.width, r.height);
 	
-			if (orientation == Direction.HORIZONTAL) {
+			if (orientation == Orientation.HORIZONTAL) {
 				x1 = (int) (r.getCenterX() - length / 2 * cosine) ; x2 = (int) (r.getCenterX() + length /  2* cosine);
 				y1 = (int) (r.getCenterY() - length / 2 * sine); y2 = (int) (r.getCenterY() + length / 2 * sine);
 			} else {
@@ -112,9 +112,9 @@ public class Rotator extends Conveyor {
 	}
 	
 	@Override 
-	public Direction getOrientation(){
+	public Orientation getOrientation(){
 		if (!rotated) return orientation;
-		if (orientation == Direction.VERTICAL) return Direction.HORIZONTAL;
-		else return Direction.VERTICAL;
+		if (orientation == Orientation.VERTICAL) return Orientation.HORIZONTAL;
+		else return Orientation.VERTICAL;
 	}
 }
