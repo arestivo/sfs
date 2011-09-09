@@ -54,6 +54,7 @@ import com.feup.sfs.facility.Facility;
 import com.feup.sfs.facility.Machine;
 import com.feup.sfs.facility.Pusher;
 import com.feup.sfs.facility.Rail;
+import com.feup.sfs.facility.Roller;
 import com.feup.sfs.facility.Rotator;
 import com.feup.sfs.facility.Table;
 import com.feup.sfs.facility.WarehouseIn;
@@ -408,6 +409,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			else if (type.equals("rail")) factory.addFacility(new Rail(properties, id));
 			else if (type.equals("pusher")) factory.addFacility(new Pusher(properties, id));
 			else if (type.equals("table")) factory.addFacility(new Table(properties, id));
+			else if (type.equals("roller")) factory.addFacility(new Roller(properties, id));
 			else throw new FactoryInitializationException("No such facility type " + type);
 			id++;
 		}
