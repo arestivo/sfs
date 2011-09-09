@@ -120,8 +120,8 @@ public class Table extends Facility{
 	}
 
 	public Point2D.Double getSensorPosition(int i, double dispX, double dispY) {
-		if (getOrientation()==Orientation.HORIZONTAL) return new Point2D.Double(dispX + getCenterX() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2, dispY + getCenterY());
-		else return new Point2D.Double(dispX + getCenterX(), dispY + getCenterY() + length / (sensors + 1) + i * length / (sensors + 1) - length / 2);
+		if (getOrientation()==Orientation.HORIZONTAL) return new Point2D.Double(dispX + getCenterX() + length / sensors * i - length / 2 + length / sensors / 2, dispY + getCenterY());
+		else return new Point2D.Double(dispX + getCenterX(), dispY + getCenterY() + length / sensors * i - length / 2 + length / sensors / 2);
 	}
 	
 	public Orientation getOrientation(){
