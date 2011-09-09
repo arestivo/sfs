@@ -88,7 +88,6 @@ public class Warehouse {
 				column++;
 				if (column * 5 + 12 > bounds.getWidth()) {column = 0; line++;}
 			}
-			column++;
 			if (column * 5 + 12 > bounds.getWidth()) {column = 0; line++;}
 		}
 	}
