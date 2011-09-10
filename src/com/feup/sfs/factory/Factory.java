@@ -52,6 +52,7 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.facility.Conveyor;
 import com.feup.sfs.facility.Facility;
 import com.feup.sfs.facility.Machine;
+import com.feup.sfs.facility.Portal3D;
 import com.feup.sfs.facility.Pusher;
 import com.feup.sfs.facility.Rail;
 import com.feup.sfs.facility.Roller;
@@ -138,29 +139,32 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 					if (popup != null) remove(popup);
 					popupfacility = facility;
 					popup = new PopupMenu(facility.getName());
-					Menu blockMenu = new Menu("Blocks"); 
-					Menu actionMenu = new Menu("Actions");
-					popup.add(blockMenu);
-					popup.add(actionMenu);
-					Collection<String> actions = facility.getActions();
-					for (Block block : getBlocks())
-						if (block.getDistanceTo(e.getX()*pixelSize, e.getY()*pixelSize) < blockSize / 2) {
-							blockMenu.add("Remove");
-							popupblock = block;
-							break;
+					if (facility.canAddBlocks()) {
+						Menu blockMenu = new Menu("Blocks"); 
+						popup.add(blockMenu);
+						for (Block block : getBlocks())
+							if (block.getDistanceTo(e.getX()*pixelSize, e.getY()*pixelSize) < blockSize / 2) {
+								blockMenu.add("Remove");
+								popupblock = block;
+								break;
+							}
+						if (popupblock == null) {
+							int bt = 1;
+							while (bt <= BlockType.getNumberBlockTypes()) {
+								blockMenu.add("Add " + BlockType.getBlockType(bt).getName());
+								bt++;
+							}
 						}
-					if (popupblock == null) {
-						int bt = 1;
-						while (bt <= BlockType.getNumberBlockTypes()) {
-							blockMenu.add("Add " + BlockType.getBlockType(bt).getName());
-							bt++;
-						}
+						blockMenu.addActionListener(this);
 					}
+					Menu actionMenu = new Menu("Actions");
+					Collection<String> actions = facility.getActions();
+					popup.add(actionMenu);
 					for (String action : actions) actionMenu.add(action);
 					add(popup);
-					blockMenu.addActionListener(this);
 					actionMenu.addActionListener(this);
-					popup.show(this, e.getX(), e.getY());					
+					popup.show(this, e.getX(), e.getY());	
+					break;
 				}
 			}
 	    }
@@ -423,6 +427,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			else if (type.equals("pusher")) factory.addFacility(new Pusher(properties, id));
 			else if (type.equals("table")) factory.addFacility(new Table(properties, id));
 			else if (type.equals("roller")) factory.addFacility(new Roller(properties, id));
+			else if (type.equals("portal3d")) factory.addFacility(new Portal3D(properties, id));
 			else throw new FactoryInitializationException("No such facility type " + type);
 			id++;
 		}
@@ -612,6 +617,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 
 	public static int generateRandom(int min, int max) {
 		return rng.nextInt(1 + max - min) + min;
+	}
+
+	public static double generateRandom(double min, double max) {
+		return min + rng.nextDouble() * (max - min);
 	}
 	
 	public static void setRandomSeed(long seed) {

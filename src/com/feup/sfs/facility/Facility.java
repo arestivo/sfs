@@ -198,4 +198,8 @@ public abstract class Facility {
 		for (int i = registerStart; i < registerEnd; i++)
 			ps.println (getId() + "," + getName() + ",R," + registerNames.get(i - registerStart) + "," + i);
 	}
+	
+	public boolean canAddBlocks() {
+		return true;
+	}
 }
