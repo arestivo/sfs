@@ -84,44 +84,43 @@ public class Portal3D extends Facility{
 		else g2.setColor(Color.black);
 		g2.drawRect(bounds.x - wt, bounds.y - wt, bounds.width + wt * 2, bounds.height + wt * 2);
 		
-		g2.setStroke(new BasicStroke(wt));
-		g2.setColor(Color.darkGray);
-		g2.drawLine((int)(bounds.x + positionx / pixelSize), bounds.y - wt, (int)(bounds.x + positionx / pixelSize), bounds.y + bounds.height + wt);
-		g2.drawLine(bounds.x - wt, (int)(bounds.y + positiony / pixelSize), bounds.x + bounds.width + wt, (int)(bounds.y + positiony / pixelSize));
-		g2.setStroke(new BasicStroke(1));
-		g2.setColor(Color.white);
+		g2.setColor(Color.black);
 		g2.drawLine((int)(bounds.x + positionx / pixelSize), bounds.y - wt, (int)(bounds.x + positionx / pixelSize), bounds.y + bounds.height + wt);
 		g2.drawLine(bounds.x - wt, (int)(bounds.y + positiony / pixelSize), bounds.x + bounds.width + wt, (int)(bounds.y + positiony / pixelSize));
 
-		g2.setStroke(new BasicStroke(wt));
-		g2.setColor(Color.darkGray);
+		g2.setStroke(new BasicStroke(2));
+		g2.setColor(Color.black);
 		g2.drawRect((int)(bounds.x + positionx / pixelSize - 1 / pixelSize), (int)(bounds.y + positiony / pixelSize - 1 / pixelSize), (int)(2 / pixelSize), (int)(2 / pixelSize));
-		g2.setStroke(new BasicStroke(1));
-		g2.setColor(Color.white);
-		g2.drawRect((int)(bounds.x + positionx / pixelSize - 1 / pixelSize), (int)(bounds.y + positiony / pixelSize - 1 / pixelSize), (int)(2 / pixelSize), (int)(2 / pixelSize));
+		g2.setStroke(new BasicStroke());
 		
-		g2.setColor(Color.orange);
+		g2.setColor(Color.pink);
 		
 		for (int i = 0; i < sensorsx; i++) {
 			Point sp = getSensorBoundsX(i);
-			g.fillRect(sp.x - wt/2 + 1, sp.y - wt/2 + 1, wt - 2, wt - 2);
+			g.fillRect(sp.x - 1, sp.y - 1, 3, 3);
 		}
 
 		for (int i = 0; i < sensorsy; i++) {
 			Point sp = getSensorBoundsY(i);
-			g.fillRect(sp.x - wt/2 + 1, sp.y - wt/2 + 1, wt - 2, wt - 2);
+			g.fillRect(sp.x - 1, sp.y - 1, 3, 3);
 		}
-/*		
-		paintLight(g, false, 0, isMotorPlusOn(), 0);
 		
-		for (int i = 0; i < sensors; i++)
-			paintLight(g, true, 1 + i, isSensorActive(i), 0);
-		
-		paintLight(g, false, 1 + sensors, isMotorMinusOn(), 0);*/
-		
+		paintLight(g, false, 0, getDigitalOut(0), 0);		
+		paintLight(g, false, 1, getDigitalOut(1), 0);		
+		paintLight(g, false, 2, getDigitalOut(2), 0);		
+		paintLight(g, false, 3, getDigitalOut(3), 0);		
 	}
 
-
+	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
+		double pixelSize = Factory.getInstance().getPixelSize();
+		int x = (int) ((position + 0.5) * .2 / pixelSize + (positionx - 1) / pixelSize);
+		int y = (int) ((line + 0.5) * .2  / pixelSize + (positiony - 1) / pixelSize);
+		if (value) g.setColor(Color.green); else g.setColor(Color.red);
+		g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.1 / pixelSize), (int)(.1 / pixelSize));
+		g.setColor(Color.black);
+		if (type) g.drawRect(getBounds().x + x - 1, getBounds().y + y - 1, (int)(.1 / pixelSize) + 1, (int)(.1 / pixelSize) + 1);
+	}
+	
 	private Point getSensorBoundsX(int i) {
 		double sp = getSensorPositionX(i);
 		double pixelSize = getFactory().getPixelSize();
