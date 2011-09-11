@@ -27,6 +27,7 @@ import java.util.Properties;
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
 
+import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.factory.Factory;
 
@@ -43,6 +44,8 @@ public class Portal3D extends Facility{
 	protected double positionx;
 	protected double positiony;
 	protected double positionz;
+	
+	protected Block block = new Block(getFactory(), 1, 0, 0);
 	
 	public Portal3D(Properties properties, int id) throws FactoryInitializationException {
 		super(id);
@@ -112,6 +115,10 @@ public class Portal3D extends Facility{
 			Point sp = getSensorBoundsY(i);
 			g.fillRect(sp.x - 1, sp.y - 1, 3, 3);
 		}
+
+		if (block != null) {
+			block.paint(g);	
+		}
 		
 		paintLight(g, false, 0, getDigitalOut(0), 0);		
 		paintLight(g, false, 1, getDigitalOut(1), 0);		
@@ -126,8 +133,8 @@ public class Portal3D extends Facility{
 		paintLight(g, false, 0, getDigitalIn(sensorsx + sensorsy), 3);
 		paintLight(g, false, 1, getDigitalIn(sensorsx + sensorsy + 1), 3);
 		
-		g.setColor(Color.green);
-		g.fillRect((int) (bounds.x + positionx / pixelSize + 1 / pixelSize - 2), (int) (bounds.y + positiony / pixelSize - 1 / pixelSize + (1 - positionz) * 2 / pixelSize - 2), 4, 4);
+		g.setColor(Color.white);
+		g.fillRect((int) (bounds.x + positionx / pixelSize + 1 / pixelSize - 1), (int) (bounds.y + positiony / pixelSize - 1 / pixelSize + (1 - positionz) * 2 / pixelSize - 1), 3, 3);
 	}
 
 	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
@@ -173,8 +180,8 @@ public class Portal3D extends Facility{
 		if (getDigitalOut(1) && !getDigitalOut(0)) positionx -= speed;
 		if (getDigitalOut(2) && !getDigitalOut(3)) positiony += speed;
 		if (getDigitalOut(3) && !getDigitalOut(2)) positiony -= speed;
-		if (getDigitalOut(4) && !getDigitalOut(5)) positionz += speed / 2;
-		if (getDigitalOut(5) && !getDigitalOut(4)) positionz -= speed / 2;
+		if (getDigitalOut(4) && !getDigitalOut(5)) positionz += speed / 4;
+		if (getDigitalOut(5) && !getDigitalOut(4)) positionz -= speed / 4;
 		
 		if (positionx < 0) positionx = 0;
 		if (positionx > width) positionx = width;
@@ -188,6 +195,12 @@ public class Portal3D extends Facility{
 
 		for (int i = 0; i < sensorsy; i++) 
 			if (Math.abs(getSensorPositionY(i) - getCenterY() + height / 2 - positiony) < sensorradius) setDigitalIn(i + sensorsx, true); else setDigitalIn(i + sensorsx, false);
+		
+		if (block != null) {
+			block.setCenterX(getCenterX() - width / 2 + positionx);
+			block.setCenterY(getCenterY() - height / 2 + positiony);
+			block.setHeight(positionz + 1);
+		}
 	}
 	
 	@Override

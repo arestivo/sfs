@@ -45,9 +45,12 @@ public class Block {
 	private boolean onTheFloor = false;
 	private int timeOnTheFloor = 0;
 	
+	private double height;
+	
 	public Block(Factory factory, int type, double centerX, double centerY) {
 		this.factory = factory;
 		this.type = type;
+		this.setHeight(1);
 		this.setNextType(-1);
 		this.setCenterX(centerX);
 		this.setCenterY(centerY);
@@ -98,7 +101,7 @@ public class Block {
 		BlockType type = BlockType.getBlockType(id);
 		return type.getColor();
 	}
-	
+
 	public void paint(Graphics g) {
 		g.setColor(getColor(type));
 		
@@ -141,6 +144,7 @@ public class Block {
 	public Rectangle getBounds() {
 		double blockSize = factory.getBlockSize();
 		if (onTheFloor) blockSize /= 2;
+		else blockSize *= height;
 		double pixelSize = factory.getPixelSize();
 		int x = (int) ((getCenterX() - blockSize/2)/pixelSize);
 		int y = (int) ((getCenterY() - blockSize/2)/pixelSize);
@@ -218,5 +222,13 @@ public class Block {
 
 	public int getTimeOnTheFloor() {
 		return timeOnTheFloor;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	public double getHeight() {
+		return height;
 	}
 }
