@@ -32,6 +32,7 @@ import com.feup.sfs.factory.Factory;
 
 public class Portal3D extends Facility{
 	private static double wallthickness = 0.3;
+	private static double sensorradius = 0.3;
 	
 	private double centerX;
 	private double centerY;
@@ -41,6 +42,7 @@ public class Portal3D extends Facility{
 	protected int sensorsy;
 	protected double positionx;
 	protected double positiony;
+	protected double positionz;
 	
 	public Portal3D(Properties properties, int id) throws FactoryInitializationException {
 		super(id);
@@ -55,17 +57,23 @@ public class Portal3D extends Facility{
 
 		positionx = Factory.generateRandom(0, width);
 		positiony = Factory.generateRandom(0, height);
+		positionz = 1;
 		
 		addDigitalOut(new SimpleDigitalOut(false), "MotorX +");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorX -");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorY +");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorY -");
+		addDigitalOut(new SimpleDigitalOut(false), "MotorZ +");
+		addDigitalOut(new SimpleDigitalOut(false), "MotorZ -");
 		
 		for (int i = 0; i < sensorsx; i++)
 			addDigitalIn(new SimpleDigitalIn(false), "Sensor X " + i);
 
 		for (int i = 0; i < sensorsy; i++)
 			addDigitalIn(new SimpleDigitalIn(false), "Sensor Y " + i);
+		
+		addDigitalIn(new SimpleDigitalIn(false), "Sensor Z Bottom");
+		addDigitalIn(new SimpleDigitalIn(false), "Sensor Z Top");
 	}
 	
 	@Override
@@ -109,6 +117,17 @@ public class Portal3D extends Facility{
 		paintLight(g, false, 1, getDigitalOut(1), 0);		
 		paintLight(g, false, 2, getDigitalOut(2), 0);		
 		paintLight(g, false, 3, getDigitalOut(3), 0);		
+		paintLight(g, false, 4, getDigitalOut(4), 0);		
+		paintLight(g, false, 5, getDigitalOut(5), 0);		
+
+		for (int i = 0; i < sensorsx; i++) paintLight(g, true, i, getDigitalIn(i), 1);		
+		for (int i = 0; i < sensorsy; i++) paintLight(g, true, i, getDigitalIn(sensorsx + i), 2);
+
+		paintLight(g, false, 0, getDigitalIn(sensorsx + sensorsy), 3);
+		paintLight(g, false, 1, getDigitalIn(sensorsx + sensorsy + 1), 3);
+		
+		g.setColor(Color.green);
+		g.fillRect((int) (bounds.x + positionx / pixelSize + 1 / pixelSize - 2), (int) (bounds.y + positiony / pixelSize - 1 / pixelSize + (1 - positionz) * 2 / pixelSize - 2), 4, 4);
 	}
 
 	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
@@ -144,40 +163,31 @@ public class Portal3D extends Facility{
 	public double getSensorPositionY(int i) {
 		return getCenterY() + height / sensorsy * i - height / 2 + height / sensorsy / 2;
 	}
-
 	
 	@Override
 	public void doStep(boolean conveyorBlocked){
+		if (facilityError) return;
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
 
 		if (getDigitalOut(0) && !getDigitalOut(1)) positionx += speed;
 		if (getDigitalOut(1) && !getDigitalOut(0)) positionx -= speed;
 		if (getDigitalOut(2) && !getDigitalOut(3)) positiony += speed;
 		if (getDigitalOut(3) && !getDigitalOut(2)) positiony -= speed;
+		if (getDigitalOut(4) && !getDigitalOut(5)) positionz += speed / 2;
+		if (getDigitalOut(5) && !getDigitalOut(4)) positionz -= speed / 2;
 		
 		if (positionx < 0) positionx = 0;
 		if (positionx > width) positionx = width;
 		if (positiony < 0) positiony = 0;
 		if (positiony > height) positiony = height;
+		if (positionz <= 0) { positionz = 0; setDigitalIn(sensorsx + sensorsy, true); } else setDigitalIn(sensorsx + sensorsy, false);
+		if (positionz >= 1) { positionz = 1; setDigitalIn(sensorsx + sensorsy + 1, true); } else setDigitalIn(sensorsx + sensorsy + 1, false);
 		
-/*		if (facilityError) return;
-		ArrayList<Block> blocks = getFactory().getBlocks();
-		boolean middleSensor[] = new boolean[sensors];
-		for (Block block : blocks) {
-			if (!conveyorBlocked && getBounds().intersects(block.getBounds())){
+		for (int i = 0; i < sensorsx; i++)
+			if (Math.abs(getSensorPositionX(i) - getCenterX() + width / 2 - positionx) < sensorradius) setDigitalIn(i, true); else setDigitalIn(i, false);
 
-				if (isRunningLeft()) block.setMoveLeft(true);
-				if (isRunningRight()) block.setMoveRight(true);
-				if (isRunningTop()) block.setMoveTop(true);
-				if (isRunningBottom()) block.setMoveBottom(true);
-			}
-			for (int i = 0; i < sensors; i++) {
-				Point2D.Double sp = getSensorPosition(i);
-				if (block.getDistanceTo(sp.x, sp.y) < getFactory().getSensorRadius()) 
-					middleSensor[i] = true;
-			}
-		}
-		for (int i = 0; i < sensors; i++) setDigitalIn(i, middleSensor[i]);*/
+		for (int i = 0; i < sensorsy; i++) 
+			if (Math.abs(getSensorPositionY(i) - getCenterY() + height / 2 - positiony) < sensorradius) setDigitalIn(i + sensorsx, true); else setDigitalIn(i + sensorsx, false);
 	}
 	
 	@Override
