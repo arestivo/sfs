@@ -42,7 +42,7 @@ public class Roller extends Facility{
 	private int direction = 0;
 	
 	public Roller(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Roller");
+		super(properties, id);
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());
@@ -60,7 +60,11 @@ public class Roller extends Facility{
 			addDigitalIn(new SimpleDigitalIn(false), "Sensor " + i);
 	}
 	
-
+	@Override
+	public String getName() {
+		return "Roller";
+	}
+	
 	@Override
 	public void paint(Graphics g){
 		g.setColor(Color.lightGray);

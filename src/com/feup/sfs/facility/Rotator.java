@@ -33,12 +33,17 @@ public class Rotator extends Conveyor {
 	protected boolean rotated = false;
 	
 	public Rotator(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Rotator");
+		super(properties, id);
 		
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate -");
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate +");
 		addDigitalIn(new SimpleDigitalIn(false), "Rotate - Sensor");	
 		addDigitalIn(new SimpleDigitalIn(false), "Rotate + Sensor");	
+	}
+	
+	@Override
+	public String getName() {
+		return "Rotator";
 	}
 	
 	public void paint(Graphics g){

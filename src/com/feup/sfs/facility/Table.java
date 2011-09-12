@@ -41,7 +41,7 @@ public class Table extends Facility{
 	protected Orientation orientation;
 	
 	public Table(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Table");
+		super(properties, id);
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());
@@ -58,6 +58,10 @@ public class Table extends Facility{
 			addDigitalIn(new SimpleDigitalIn(false), "Sensor " + i);
 	}
 	
+	@Override
+	public String getName() {
+		return "Table";
+	}
 
 	@Override
 	public void paint(Graphics g){

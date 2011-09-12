@@ -33,7 +33,7 @@ public class Pusher extends Conveyor {
 	protected boolean invert = false;
 	
 	public Pusher(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Pusher");
+		super(properties, id);
 		
 		if (properties.containsKey("facility."+id+".invert") && properties.getProperty("facility."+id+".invert").equals("true"))
 			invert = true;
@@ -42,6 +42,11 @@ public class Pusher extends Conveyor {
 		addDigitalOut(new SimpleDigitalOut(false), "Push +");
 		addDigitalIn(new SimpleDigitalIn(false), "Push - Sensor");	
 		addDigitalIn(new SimpleDigitalIn(false), "Push + Sensor");	
+	}
+	
+	@Override
+	public String getName() {
+		return "Pusher";
 	}
 	
 	public void paint(Graphics g){

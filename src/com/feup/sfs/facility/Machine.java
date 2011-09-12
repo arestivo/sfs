@@ -38,7 +38,7 @@ public class Machine extends Conveyor {
 	int tools[] = new int[3];
 	
 	public Machine(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Machine");
+		super(properties, id);
 		
 		tools[0] = new Integer(properties.getProperty("facility." + id + ".tool1")).intValue();
 		tools[1] = new Integer(properties.getProperty("facility." + id + ".tool2")).intValue();
@@ -61,6 +61,11 @@ public class Machine extends Conveyor {
 		addDigitalIn(new SimpleDigitalIn(false), "Z + Sensor");
 		
 		wasWorking = false;
+	}
+	
+	@Override
+	public String getName() {
+		return "Machine";
 	}
 
 	@Override

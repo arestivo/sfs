@@ -46,18 +46,18 @@ public abstract class Facility {
 	
 	protected boolean facilityError;
 
-	protected String name;
 	private String alias; 
 	
 	public Factory getFactory(){
 		return Factory.getInstance();
 	}
+
+	public abstract String getName();
 	
-	public Facility(Properties properties, int id, String name){
+	public Facility(Properties properties, int id){
 		this.id = id;
-		this.name = name;
 		
-		alias = properties.getProperty("facility."+id+".alias", name + " #" + id);
+		alias = properties.getProperty("facility."+id+".alias", getName() + " #" + id);
 
 		digitalInStart = digitalInEnd = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
 		digitalOutStart = digitalOutEnd = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
@@ -119,10 +119,6 @@ public abstract class Facility {
 
 	public String getType() {
 		return "#" + getId() + " " + getName() + getMessage() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String getMessage() {

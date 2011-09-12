@@ -57,7 +57,7 @@ public class Portal3D extends Facility{
 	protected int clawTime = 0;
 	
 	public Portal3D(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Portal3D");
+		super(properties, id);
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());
@@ -88,6 +88,11 @@ public class Portal3D extends Facility{
 		addDigitalIn(new SimpleDigitalIn(false), "Sensor Z Top");
 
 		addDigitalIn(new SimpleDigitalIn(false), "Piece Sensor");
+	}
+	
+	@Override
+	public String getName() {
+		return "3D Portal";
 	}
 	
 	@Override

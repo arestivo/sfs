@@ -41,8 +41,8 @@ public class Conveyor extends Facility{
 	
 	protected Orientation orientation;
 	
-	public Conveyor(Properties properties, int id, String name) throws FactoryInitializationException {
-		super(properties, id, name);
+	public Conveyor(Properties properties, int id) throws FactoryInitializationException {
+		super(properties, id);
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());
@@ -62,6 +62,10 @@ public class Conveyor extends Facility{
 			addDigitalIn(new SimpleDigitalIn(false), "Sensor " + i);
 	}
 	
+	@Override
+	public String getName() {
+		return "Conveyor";
+	}	
 
 	@Override
 	public void paint(Graphics g){

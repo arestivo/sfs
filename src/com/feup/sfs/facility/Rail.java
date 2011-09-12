@@ -18,7 +18,7 @@ public class Rail extends Conveyor {
 	private double railPosition = 0;
 	
 	public Rail(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id, "Rail");
+		super(properties, id);
 
 		setRailSize(new Integer(properties.getProperty("facility."+id+".rail.size")).intValue());
 		
@@ -28,6 +28,11 @@ public class Rail extends Conveyor {
 		addDigitalOut(new SimpleDigitalOut(false), "Rail +");
 		addDigitalIn(new SimpleDigitalIn(false), "Rail - Sensor");	
 		addDigitalIn(new SimpleDigitalIn(false), "Rail + Sensor");	
+	}
+
+	@Override
+	public String getName() {
+		return "Rail";
 	}
 	
 	private void paintConveyor(Graphics g){
