@@ -118,7 +118,7 @@ public abstract class Facility {
 	}
 
 	public String getType() {
-		return "#" + getId() + " " + getName() + getMessage() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
+		return "#" + getId() + " " + getAlias() + " " + getName() + getMessage() + " (" + digitalInStart + ":" + (digitalInStart + getNumberDigitalIns() - 1) + " - " + digitalOutStart + ":" + (digitalOutStart + getNumberDigitalOuts() - 1) + ")";
 	}
 
 	public String getMessage() {
