@@ -276,7 +276,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 						}
 						boolean onTheFloor = true;
 						for (Facility facility : Factory.getInstance().getFacilities())
-							if (facility.getBounds().intersects(block.getBounds())) {onTheFloor = false; break;}
+							if (facility.getBounds().intersects(block.getCenterBounds())) {onTheFloor = false; break;}
 						block.setOnTheFloor(onTheFloor);
 					}
 					for (Block block : toBeRemoved) {

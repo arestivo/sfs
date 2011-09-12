@@ -18,6 +18,7 @@ package com.feup.sfs.block;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import com.feup.sfs.block.BlockType.SHAPE;
@@ -230,5 +231,9 @@ public class Block {
 
 	public double getHeight() {
 		return height;
+	}
+
+	public Rectangle getCenterBounds() {
+		return new Rectangle(getBounds().x + getBounds().width / 4, getBounds().y  + getBounds().height / 4, getBounds().width / 2, getBounds().height / 2);
 	}
 }
