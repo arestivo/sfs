@@ -1,3 +1,29 @@
 h2. Shop Floor Simulator
 
 Simulates the shop floor of a factory with machines that accept commands via modbus.
+
+h3. Facility Properties
+
+h4. General
+
+configuration.width = (factory width in meters)
+configuration.height = (factory height in meters)
+
+floor.color = (factory color in hexadecimal value)
+
+configuration.pixelsize = (how many meters a pixel represents)
+configuration.blocksize = (size of a block in meters)
+
+...
+
+h4. Blocktypes
+
+h4. Tools
+
+h4. Transformations
+
+h4. Warehouse
+
+h4. Facilities
+
+h4. Blocks
