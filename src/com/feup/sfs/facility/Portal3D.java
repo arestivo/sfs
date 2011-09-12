@@ -57,8 +57,7 @@ public class Portal3D extends Facility{
 	protected int clawTime = 0;
 	
 	public Portal3D(Properties properties, int id) throws FactoryInitializationException {
-		super(id);
-		this.name = "Portal3D";
+		super(properties, id, "Portal3D");
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());

@@ -18,8 +18,7 @@ public class Rail extends Conveyor {
 	private double railPosition = 0;
 	
 	public Rail(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id);
-		this.name = "Rail";
+		super(properties, id, "Rail");
 
 		setRailSize(new Integer(properties.getProperty("facility."+id+".rail.size")).intValue());
 		

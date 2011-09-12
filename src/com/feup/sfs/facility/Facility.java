@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
 import net.wimpi.modbus.procimg.SimpleDigitalOut;
@@ -45,19 +46,23 @@ public abstract class Facility {
 	
 	protected boolean facilityError;
 
-	protected String name; 
+	protected String name;
+	private String alias; 
 	
 	public Factory getFactory(){
 		return Factory.getInstance();
 	}
 	
-	public Facility(int id){
+	public Facility(Properties properties, int id, String name){
 		this.id = id;
+		this.name = name;
 		
+		alias = properties.getProperty("facility."+id+".alias", name + " #" + id);
+
 		digitalInStart = digitalInEnd = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
 		digitalOutStart = digitalOutEnd = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
 		registerStart = registerEnd = ModbusSlave.getSimpleProcessImage().getRegisterCount();
-
+		
 		timeForcing = 0;
 		facilityError = false;
 	}
@@ -192,13 +197,17 @@ public abstract class Facility {
 
 	public void writeCsv(PrintStream ps) {
 		for (int i = digitalOutStart; i < digitalOutEnd; i++)
-			ps.println (getId() + "," + getName() + ",O," + digitalOutNames.get(i - digitalOutStart) + "," + i);
+			ps.println (getId() + "," + getAlias() + "," + getName() + ",O," + digitalOutNames.get(i - digitalOutStart) + "," + i);
 		for (int i = digitalInStart; i < digitalInEnd; i++)
-			ps.println (getId() + "," + getName() + ",I," + digitalInNames.get(i - digitalInStart) + "," + i);
+			ps.println (getId() + "," + getAlias() + "," + getName() + ",I," + digitalInNames.get(i - digitalInStart) + "," + i);
 		for (int i = registerStart; i < registerEnd; i++)
-			ps.println (getId() + "," + getName() + ",R," + registerNames.get(i - registerStart) + "," + i);
+			ps.println (getId() + "," + getAlias() + "," + getName() + ",R," + registerNames.get(i - registerStart) + "," + i);
 	}
 	
+	private String getAlias() {
+		return alias;
+	}
+
 	public boolean canAddBlocks() {
 		return true;
 	}

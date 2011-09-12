@@ -38,8 +38,7 @@ public class Machine extends Conveyor {
 	int tools[] = new int[3];
 	
 	public Machine(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id);
-		this.name = "Machine";
+		super(properties, id, "Machine");
 		
 		tools[0] = new Integer(properties.getProperty("facility." + id + ".tool1")).intValue();
 		tools[1] = new Integer(properties.getProperty("facility." + id + ".tool2")).intValue();

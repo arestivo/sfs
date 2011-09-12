@@ -41,9 +41,8 @@ public class Conveyor extends Facility{
 	
 	protected Orientation orientation;
 	
-	public Conveyor(Properties properties, int id) throws FactoryInitializationException {
-		super(id);
-		this.name = "Conveyor";
+	public Conveyor(Properties properties, int id, String name) throws FactoryInitializationException {
+		super(properties, id, name);
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());

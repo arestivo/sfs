@@ -42,8 +42,7 @@ public class Roller extends Facility{
 	private int direction = 0;
 	
 	public Roller(Properties properties, int id) throws FactoryInitializationException {
-		super(id);
-		this.name = "Roller";
+		super(properties, id, "Roller");
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());

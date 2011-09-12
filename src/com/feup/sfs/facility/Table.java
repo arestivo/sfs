@@ -41,8 +41,7 @@ public class Table extends Facility{
 	protected Orientation orientation;
 	
 	public Table(Properties properties, int id) throws FactoryInitializationException {
-		super(id);
-		this.name = "Table";
+		super(properties, id, "Table");
 
 		setCenterX(new Double(properties.getProperty("facility."+id+".center.x")).doubleValue());
 		setCenterY(new Double(properties.getProperty("facility."+id+".center.y")).doubleValue());

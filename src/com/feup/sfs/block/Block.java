@@ -18,7 +18,6 @@ package com.feup.sfs.block;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import com.feup.sfs.block.BlockType.SHAPE;

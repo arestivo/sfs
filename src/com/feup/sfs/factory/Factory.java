@@ -422,7 +422,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		while(true){
 			String type = properties.getProperty("facility."+id+".type");
 			if (type==null) break;
-			if (type.equals("conveyor")) factory.addFacility(new Conveyor(properties, id));
+			if (type.equals("conveyor")) factory.addFacility(new Conveyor(properties, id, "Conveyor"));
 			else if (type.equals("rotator")) factory.addFacility(new Rotator(properties, id));
 			else if (type.equals("machine")) factory.addFacility(new Machine(properties, id));
 			else if (type.equals("warehouseout")) factory.addFacility(new WarehouseOut(properties, id));

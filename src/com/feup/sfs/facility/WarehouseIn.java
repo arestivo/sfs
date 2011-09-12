@@ -30,8 +30,7 @@ public class WarehouseIn extends Conveyor{
 	private boolean lastvalue = false;
 	
 	public WarehouseIn(Properties properties, int id)	throws FactoryInitializationException {
-		super(properties, id);
-		this.name = "WarehouseIn";
+		super(properties, id, "WarehouseIn");
 		
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
 		

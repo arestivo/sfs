@@ -29,8 +29,7 @@ public class WarehouseOut extends Conveyor{
 	private int lastValue;
 	
 	public WarehouseOut(Properties properties, int id)	throws FactoryInitializationException {
-		super(properties, id);
-		this.name = "Warehouse Out";
+		super(properties, id, "Warehouse Out");
 		
 		addRegister(new SimpleInputRegister(0), "Warehouse Out");
 		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();

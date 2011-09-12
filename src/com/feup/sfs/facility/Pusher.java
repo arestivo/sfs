@@ -33,8 +33,7 @@ public class Pusher extends Conveyor {
 	protected boolean invert = false;
 	
 	public Pusher(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id);
-		this.name = "Pusher";
+		super(properties, id, "Pusher");
 		
 		if (properties.containsKey("facility."+id+".invert") && properties.getProperty("facility."+id+".invert").equals("true"))
 			invert = true;

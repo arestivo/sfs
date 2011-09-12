@@ -33,8 +33,7 @@ public class Rotator extends Conveyor {
 	protected boolean rotated = false;
 	
 	public Rotator(Properties properties, int id) throws FactoryInitializationException {
-		super(properties, id);
-		this.name = "Rotator";
+		super(properties, id, "Rotator");
 		
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate -");
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate +");
