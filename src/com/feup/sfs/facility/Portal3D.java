@@ -103,8 +103,7 @@ public class Portal3D extends Facility{
 		g2.drawRect(bounds.x - wt, bounds.y - wt, bounds.width + wt * 2, bounds.height + wt * 2);		
 		g2.setStroke(new BasicStroke(1));
 
-		if (facilityError) g2.setColor(Color.red);
-		else g2.setColor(Color.black);
+		g2.setColor(facilityError?Color.red:Color.black);
 		g2.drawRect(bounds.x - wt, bounds.y - wt, bounds.width + wt * 2, bounds.height + wt * 2);
 		
 		g2.setColor(Color.black);
@@ -112,7 +111,7 @@ public class Portal3D extends Facility{
 		g2.drawLine(bounds.x - wt, (int)(bounds.y + positiony / pixelSize), bounds.x + bounds.width + wt, (int)(bounds.y + positiony / pixelSize));
 
 		g2.setStroke(new BasicStroke(2));
-		g2.setColor(Color.black);
+		g2.setColor(facilityError?Color.red:Color.black);
 		g2.drawRect((int)(bounds.x + positionx / pixelSize - 1 / pixelSize), (int)(bounds.y + positiony / pixelSize - 1 / pixelSize), (int)(2 / pixelSize), (int)(2 / pixelSize));
 		g2.setStroke(new BasicStroke());
 		
@@ -150,8 +149,6 @@ public class Portal3D extends Facility{
 
 		paintLight(g, false, 0, getDigitalOut(6), 4);
 		paintLight(g, false, 1, getDigitalIn(sensorsx + sensorsy + 2), 4);
-		
-		
 	}
 
 	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
@@ -192,6 +189,7 @@ public class Portal3D extends Facility{
 	public void doStep(boolean conveyorBlocked){
 		if (facilityError) return;
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
+		boolean forcing = false;
 		
 		// Claw State Machine
 		
@@ -232,8 +230,8 @@ public class Portal3D extends Facility{
 		if (positionx > width) positionx = width;
 		if (positiony < 0) positiony = 0;
 		if (positiony > height) positiony = height;
-		if (positionz <= 0) { positionz = 0; setDigitalIn(sensorsx + sensorsy, true); } else setDigitalIn(sensorsx + sensorsy, false);
-		if (positionz >= 1) { positionz = 1; setDigitalIn(sensorsx + sensorsy + 1, true); } else setDigitalIn(sensorsx + sensorsy + 1, false);
+		if (positionz < 0) { forcing = true; positionz = 0; setDigitalIn(sensorsx + sensorsy, true); } else setDigitalIn(sensorsx + sensorsy, false);
+		if (positionz > 1) { forcing = true; positionz = 1; setDigitalIn(sensorsx + sensorsy + 1, true); } else setDigitalIn(sensorsx + sensorsy + 1, false);
 		
 		for (int i = 0; i < sensorsx; i++)
 			if (Math.abs(getSensorPositionX(i) - getCenterX() + width / 2 - positionx) < sensorradius) setDigitalIn(i, true); else setDigitalIn(i, false);
@@ -260,6 +258,8 @@ public class Portal3D extends Facility{
 		} 
 		
 		if (block != null || isBlockPresent()) setDigitalIn(sensorsx + sensorsy + 2, true); else setDigitalIn(sensorsx + sensorsy + 2, false);
+		
+		isForcing(forcing);
 	}
 	
 	private boolean isBlockPresent() {
