@@ -191,10 +191,10 @@ public class Portal3D extends Facility{
 		if (facilityError) return;
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
 
-		if (getDigitalOut(0) && !getDigitalOut(1)) positionx += speed;
-		if (getDigitalOut(1) && !getDigitalOut(0)) positionx -= speed;
-		if (getDigitalOut(2) && !getDigitalOut(3)) positiony += speed;
-		if (getDigitalOut(3) && !getDigitalOut(2)) positiony -= speed;
+		if (getDigitalOut(0) && !getDigitalOut(1) && positionz == 1) positionx += speed;
+		if (getDigitalOut(1) && !getDigitalOut(0) && positionz == 1) positionx -= speed;
+		if (getDigitalOut(2) && !getDigitalOut(3) && positionz == 1) positiony += speed;
+		if (getDigitalOut(3) && !getDigitalOut(2) && positionz == 1) positiony -= speed;
 		if (getDigitalOut(4) && !getDigitalOut(5)) positionz += speed / 4;
 		if (getDigitalOut(5) && !getDigitalOut(4)) positionz -= speed / 4;
 		
