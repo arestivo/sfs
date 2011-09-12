@@ -70,10 +70,6 @@ public class Portal3D extends Facility{
 		positionx = Factory.generateRandom(0, width);
 		positiony = Factory.generateRandom(0, height);
 		positionz = Factory.generateRandom(0, 1);
-
-		positionx = 1;
-		positiony = height / 2;
-		positionz = 0;
 		
 		addDigitalOut(new SimpleDigitalOut(false), "MotorX +");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorX -");
