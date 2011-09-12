@@ -22,6 +22,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import net.wimpi.modbus.procimg.SimpleDigitalIn;
@@ -34,6 +36,7 @@ import com.feup.sfs.factory.Factory;
 public class Portal3D extends Facility{
 	private static double wallthickness = 0.3;
 	private static double sensorradius = 0.3;
+	private static int timetograb = 1000;
 	
 	private double centerX;
 	private double centerY;
@@ -45,7 +48,7 @@ public class Portal3D extends Facility{
 	protected double positiony;
 	protected double positionz;
 	
-	protected Block block = new Block(getFactory(), 1, 0, 0);
+	protected Block block = null;
 	
 	public Portal3D(Properties properties, int id) throws FactoryInitializationException {
 		super(id);
@@ -60,7 +63,11 @@ public class Portal3D extends Facility{
 
 		positionx = Factory.generateRandom(0, width);
 		positiony = Factory.generateRandom(0, height);
-		positionz = 1;
+		positionz = Factory.generateRandom(0, 1);
+
+		positionx = 1;
+		positiony = height / 2;
+		positionz = 0;
 		
 		addDigitalOut(new SimpleDigitalOut(false), "MotorX +");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorX -");
@@ -68,6 +75,7 @@ public class Portal3D extends Facility{
 		addDigitalOut(new SimpleDigitalOut(false), "MotorY -");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorZ +");
 		addDigitalOut(new SimpleDigitalOut(false), "MotorZ -");
+		addDigitalOut(new SimpleDigitalOut(false), "Grab");
 		
 		for (int i = 0; i < sensorsx; i++)
 			addDigitalIn(new SimpleDigitalIn(false), "Sensor X " + i);
@@ -77,6 +85,8 @@ public class Portal3D extends Facility{
 		
 		addDigitalIn(new SimpleDigitalIn(false), "Sensor Z Bottom");
 		addDigitalIn(new SimpleDigitalIn(false), "Sensor Z Top");
+
+		addDigitalIn(new SimpleDigitalIn(false), "Piece Sensor");
 	}
 	
 	@Override
@@ -135,6 +145,11 @@ public class Portal3D extends Facility{
 		
 		g.setColor(Color.white);
 		g.fillRect((int) (bounds.x + positionx / pixelSize + 1 / pixelSize - 1), (int) (bounds.y + positiony / pixelSize - 1 / pixelSize + (1 - positionz) * 2 / pixelSize - 1), 3, 3);
+
+		paintLight(g, false, 0, getDigitalOut(6), 4);
+		paintLight(g, false, 1, getDigitalIn(sensorsx + sensorsy + 2), 4);
+		
+		
 	}
 
 	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
@@ -200,9 +215,26 @@ public class Portal3D extends Facility{
 			block.setCenterX(getCenterX() - width / 2 + positionx);
 			block.setCenterY(getCenterY() - height / 2 + positiony);
 			block.setHeight(positionz + 1);
-		}
+		} 
+		
+		if (block != null || isBlockPresent()) setDigitalIn(sensorsx + sensorsy + 2, true); else setDigitalIn(sensorsx + sensorsy + 2, false);
 	}
 	
+	private boolean isBlockPresent() {
+		if (positionz == 0) {
+			ArrayList<Block> blocks = getFactory().getBlocks();
+			for (Block block : blocks) {
+				Point2D.Double sp = getClawPosition();
+				if (block.getDistanceTo(sp.x, sp.y) < sensorradius) return true;
+			}
+		}
+		return false;
+	}
+
+	private Point2D.Double getClawPosition() {
+		return new Point2D.Double(getCenterX() - width / 2 + positionx, getCenterY() - height / 2 + positiony);
+	}
+
 	@Override
 	public Rectangle getBounds() {
 		double pixelSize = getFactory().getPixelSize();
