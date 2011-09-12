@@ -178,9 +178,13 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	
 	public void addBlock(int type, double centerX, double centerY){
 		Block block = new Block(this, type, centerX, centerY);
-		blocks.add(block);
+		addBlock(block);
 	}
 
+	public void addBlock(Block block) {
+		blocks.add(block);
+	}
+	
 	public void addFacility(Facility facility){
 		facilities.add(facility);
 	}
@@ -626,5 +630,6 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	public static void setRandomSeed(long seed) {
 		rng.setSeed(seed);
 	}
+
 
 }

@@ -34,9 +34,13 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.factory.Factory;
 
 public class Portal3D extends Facility{
+	private static int TIMETOCLOSE = 1000;
+	private static int TIMETOOPEN = 1000;
+	
+	private enum ClawStates {CLOSED, OPENING, OPENED, CLOSING};
+	
 	private static double wallthickness = 0.3;
 	private static double sensorradius = 0.3;
-	private static int timetograb = 1000;
 	
 	private double centerX;
 	private double centerY;
@@ -49,6 +53,8 @@ public class Portal3D extends Facility{
 	protected double positionz;
 	
 	protected Block block = null;
+	protected ClawStates clawState = ClawStates.OPENED;
+	protected int clawTime = 0;
 	
 	public Portal3D(Properties properties, int id) throws FactoryInitializationException {
 		super(id);
@@ -190,7 +196,35 @@ public class Portal3D extends Facility{
 	public void doStep(boolean conveyorBlocked){
 		if (facilityError) return;
 		double speed = getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000;
-
+		
+		// Claw State Machine
+		
+		if (getDigitalOut(6) && clawState == ClawStates.CLOSING) {
+			clawTime -= getFactory().getSimulationTime();
+			if (clawTime <= 0) clawState = ClawStates.CLOSED;
+		}
+		
+		if (getDigitalOut(6) && clawState == ClawStates.OPENING) clawState = ClawStates.CLOSED;
+		
+		if (getDigitalOut(6) && clawState == ClawStates.OPENED) {
+			clawState = ClawStates.CLOSING;
+			clawTime = TIMETOCLOSE;
+		}
+		
+		if (!getDigitalOut(6) && clawState == ClawStates.CLOSED) {
+			clawState = ClawStates.OPENING;
+			clawTime = TIMETOOPEN;
+		}
+		
+		if (!getDigitalOut(6) && clawState == ClawStates.CLOSING) clawState = ClawStates.OPENED;
+		
+		if (!getDigitalOut(6) && clawState == ClawStates.OPENING) {
+			clawTime -= getFactory().getSimulationTime();
+			if (clawTime <= 0) clawState = ClawStates.OPENED;
+		}
+		
+		// Movement
+		
 		if (getDigitalOut(0) && !getDigitalOut(1) && positionz == 1) positionx += speed;
 		if (getDigitalOut(1) && !getDigitalOut(0) && positionz == 1) positionx -= speed;
 		if (getDigitalOut(2) && !getDigitalOut(3) && positionz == 1) positiony += speed;
@@ -211,6 +245,18 @@ public class Portal3D extends Facility{
 		for (int i = 0; i < sensorsy; i++) 
 			if (Math.abs(getSensorPositionY(i) - getCenterY() + height / 2 - positiony) < sensorradius) setDigitalIn(i + sensorsx, true); else setDigitalIn(i + sensorsx, false);
 		
+		if (block != null && clawState == ClawStates.OPENED) {
+			block.setHeight(1);
+			getFactory().addBlock(block);
+			block = null;
+		}
+		
+		if (block == null && isBlockPresent() && clawState == ClawStates.CLOSED) {
+			block = getCurrentBlock();
+			System.out.println(block);
+			if (block != null) 	getFactory().removeBlock(block);				
+		}
+		
 		if (block != null) {
 			block.setCenterX(getCenterX() - width / 2 + positionx);
 			block.setCenterY(getCenterY() - height / 2 + positiony);
@@ -221,14 +267,18 @@ public class Portal3D extends Facility{
 	}
 	
 	private boolean isBlockPresent() {
+		return (getCurrentBlock() != null);
+	}
+
+	private Block getCurrentBlock() {
 		if (positionz == 0) {
 			ArrayList<Block> blocks = getFactory().getBlocks();
 			for (Block block : blocks) {
 				Point2D.Double sp = getClawPosition();
-				if (block.getDistanceTo(sp.x, sp.y) < sensorradius) return true;
+				if (block.getDistanceTo(sp.x, sp.y) < sensorradius) return block;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	private Point2D.Double getClawPosition() {
