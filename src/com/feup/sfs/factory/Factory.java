@@ -466,6 +466,9 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 			warehouses.get(new Integer(i)).paint(g);
 		for (Facility facility : facilities)
 			facility.paintTop(g);
+		
+		g.setColor(Color.white);
+		g.drawString("SFS v1.1.2 by André Restivo (arestivo@fe.up.pt)", 5, 15);
 	}
 	
 	@Override
