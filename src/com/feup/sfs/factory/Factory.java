@@ -589,9 +589,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 	public void actionPerformed(ActionEvent action) {
 		Menu menu = (Menu) action.getSource();
 		if (popupfacility !=null && menu.getLabel().equals("Blocks")) {
-			if (action.getActionCommand().equals("Remove"))
+			if (action.getActionCommand().equals("Remove")) {
 				removeBlock(popupblock);
-			else {
+				recorder.blockRemoved(popupblock);
+			} else {
 				BlockType type = BlockType.getBlockType(action.getActionCommand().substring(4));
 				Block block = addBlock(type.getId(), popupfacility.getBounds().getCenterX()*pixelSize, popupfacility.getBounds().getCenterY()*pixelSize);
 				recorder.blockAdded(block);
@@ -633,5 +634,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		rng.setSeed(seed);
 	}
 
-
+	public void removeBlockAt(double x, double y) {
+		for (Block block : getBlocks())	if (block.getDistanceTo(x, y) < blockSize / 2) {
+				removeBlock(block);
+				break;
+		}
+	}
 }

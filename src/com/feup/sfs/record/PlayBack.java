@@ -70,5 +70,10 @@ public class PlayBack {
 			int t = new Integer(cmd).intValue();
 			Factory.getInstance().addBlock(t, x, y);
 		}
+		if (type.equals("REM")) {
+			double x = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue(); cmd = cmd.substring(cmd.indexOf(' ') + 1);
+			double y = new Double(cmd).doubleValue();
+			Factory.getInstance().removeBlockAt(x, y);
+		}
 	}
 }

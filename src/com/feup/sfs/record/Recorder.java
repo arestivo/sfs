@@ -33,6 +33,7 @@ public class Recorder {
 	private Vector<Integer> registers = new Vector<Integer>();;
 	private PrintStream ps = null;
 	private ArrayList<Block> addedBlocks = new ArrayList<Block>();
+	private ArrayList<Block> removedBlocks = new ArrayList<Block>();
 	
 	public Recorder(String file) throws FileNotFoundException {
 		System.out.println("Recording to: " + file);
@@ -97,6 +98,7 @@ public class Recorder {
 		if (!initialized) init();
 		else printDeltas(l);
 		printAddedBlocks(l);
+		printRemovedBlocks(l);
 	}
 
 	private void printAddedBlocks(long l) {
@@ -104,5 +106,16 @@ public class Recorder {
 			ps.println(l + " ADD " + block.getCenterX() + " " + block.getCenterY() + " " + block.getType());
 		}
 		addedBlocks.clear();
+	}
+
+	private void printRemovedBlocks(long l) {
+		for (Block block : removedBlocks) {
+			ps.println(l + " REM " + block.getCenterX() + " " + block.getCenterY());
+		}
+		removedBlocks.clear();
+	}
+
+	public void blockRemoved(Block block) {
+		removedBlocks.add(block);		
 	}
 }
