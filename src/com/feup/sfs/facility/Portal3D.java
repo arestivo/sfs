@@ -97,6 +97,10 @@ public class Portal3D extends Facility{
 	
 	@Override
 	public void paint(Graphics g){
+	}
+	
+	@Override
+	public void paintTop(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		Rectangle bounds = getBounds();
 		double pixelSize = getFactory().getPixelSize();
