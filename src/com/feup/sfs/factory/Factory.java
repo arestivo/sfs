@@ -176,9 +176,10 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 		return new Dimension((int)(width/pixelSize), (int)(heigth/pixelSize));
 	}
 	
-	public void addBlock(int type, double centerX, double centerY){
+	public Block addBlock(int type, double centerX, double centerY){
 		Block block = new Block(this, type, centerX, centerY);
 		addBlock(block);
+		return block;
 	}
 
 	public void addBlock(Block block) {
@@ -592,7 +593,8 @@ public class Factory extends JPanel implements ActionListener, KeyListener{
 				removeBlock(popupblock);
 			else {
 				BlockType type = BlockType.getBlockType(action.getActionCommand().substring(4));
-				addBlock(type.getId(), popupfacility.getBounds().getCenterX()*pixelSize, popupfacility.getBounds().getCenterY()*pixelSize);
+				Block block = addBlock(type.getId(), popupfacility.getBounds().getCenterX()*pixelSize, popupfacility.getBounds().getCenterY()*pixelSize);
+				recorder.blockAdded(block);
 			}
 		}
 		if (popupfacility !=null && menu.getLabel().equals("Actions")) {

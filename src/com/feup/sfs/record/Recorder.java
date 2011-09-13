@@ -22,6 +22,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import com.feup.sfs.block.Block;
 import com.feup.sfs.facility.Facility;
 import com.feup.sfs.factory.Factory;
 
@@ -31,6 +32,7 @@ public class Recorder {
 	private Vector<Integer> outputs = new Vector<Integer>();;
 	private Vector<Integer> registers = new Vector<Integer>();;
 	private PrintStream ps = null;
+	private ArrayList<Block> addedBlocks = new ArrayList<Block>();
 	
 	public Recorder(String file) throws FileNotFoundException {
 		System.out.println("Recording to: " + file);
@@ -87,8 +89,20 @@ public class Recorder {
 		}		
 	}
 	
+	public void blockAdded(Block block) {
+		addedBlocks.add(block);
+	}
+	
 	public void record(long l) {
 		if (!initialized) init();
 		else printDeltas(l);
+		printAddedBlocks(l);
+	}
+
+	private void printAddedBlocks(long l) {
+		for (Block block : addedBlocks) {
+			ps.println(l + " ADD " + block.getCenterX() + " " + block.getCenterY() + " " + block.getType());
+		}
+		addedBlocks.clear();
 	}
 }

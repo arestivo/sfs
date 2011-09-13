@@ -58,9 +58,17 @@ public class PlayBack {
 		String type = cmd.substring(0,pos);
 		cmd = cmd.substring(pos + 1);
 		pos = cmd.indexOf(' ');
-		int reg = new Integer(cmd.substring(0,pos)).intValue();
-		int value = new Integer(cmd.substring(pos + 1)).intValue();
-		if (type.equals("OUT"))	ModbusSlave.getSimpleProcessImage().getDigitalOut(reg).set(value==1);
-		if (type.equals("REG"))	ModbusSlave.getSimpleProcessImage().getRegister(reg).setValue(value);
+		if (type.equals("OUT") || type.equals("REG")) {
+			int reg = new Integer(cmd.substring(0,pos)).intValue();
+			int value = new Integer(cmd.substring(pos + 1)).intValue();
+			if (type.equals("OUT"))	ModbusSlave.getSimpleProcessImage().getDigitalOut(reg).set(value==1);
+			if (type.equals("REG"))	ModbusSlave.getSimpleProcessImage().getRegister(reg).setValue(value);
+		}
+		if (type.equals("ADD")) {
+			double x = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue(); cmd = cmd.substring(cmd.indexOf(' ') + 1);
+			double y = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue(); cmd = cmd.substring(cmd.indexOf(' ') + 1);
+			int t = new Integer(cmd).intValue();
+			Factory.getInstance().addBlock(t, x, y);
+		}
 	}
 }
