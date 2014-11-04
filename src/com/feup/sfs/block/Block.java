@@ -179,10 +179,8 @@ public class Block {
 	}
 
 	public double getDistanceTo(double x, double y) {
-		double xpart = getCenterX() - x;
-		xpart *= xpart;
-		double ypart = getCenterY() - y;
-		ypart *= ypart;
+		double xpart = getCenterX() - x; xpart *= xpart;
+		double ypart = getCenterY() - y; ypart *= ypart;
 		return Math.sqrt(xpart + ypart);
 	}
 
