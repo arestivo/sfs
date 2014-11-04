@@ -110,8 +110,8 @@ public class Factory extends JPanel implements ActionListener, KeyListener {
 	private static Random rng = new Random();
 
 
-	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, int floorTime,
-	        double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile, double toolMoveSpeed, double speedDelta) throws FileNotFoundException {
+	public Factory(int width, int heigth, double blockSize, double pixelSize, int simulationTime, double conveyorSpeed, double sensorRadius, double rotationSpeed, int errorTime, int floorTime, double toolRotationSpeed, double pushSpeed, String floorColor, String recordFile, String playbackFile, double toolMoveSpeed, double speedDelta) throws FileNotFoundException {
+		
 		this.width = width;
 		this.heigth = heigth;
 		this.blockSize = blockSize;
@@ -127,6 +127,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener {
 		this.pushSpeed = pushSpeed;
 		this.toolMoveSpeed = toolMoveSpeed;
 		this.speedDelta = speedDelta;
+
 		if (recordFile != null)
 			recorder = new Recorder(recordFile);
 		if (playbackFile != null)
@@ -666,7 +667,13 @@ public class Factory extends JPanel implements ActionListener, KeyListener {
 						recorder.blockRemoved(popupblock);
 				} else {
 					BlockType type = BlockType.getBlockType(action.getActionCommand().substring(4));
-					Block block = addBlock(type.getId(), popupfacility.getBounds().getCenterX() * pixelSize, popupfacility.getBounds().getCenterY() * pixelSize);
+					
+					double bX = popupfacility.getAddBlockX() * pixelSize;
+					double bY = popupfacility.getAddBlockY() * pixelSize;
+					
+					System.out.println(bX + " " + bY);
+					
+					Block block = addBlock(type.getId(), bX, bY);
 					if (recorder != null)
 						recorder.blockAdded(block);
 				}

@@ -209,4 +209,18 @@ public class Conveyor extends Facility {
 	protected double getBlockDisplacement() {
 		return (getFactory().getConveyorSpeed() + speedDelta) * getFactory().getSimulationTime() / 1000;
     }
+	
+	@Override
+	public double getAddBlockX() {
+		if (sensors > 0 && getOrientation() == Orientation.HORIZONTAL)
+			return getSensorPosition(0).x / getFactory().getPixelSize();
+	    return super.getAddBlockX();
+	}
+
+	@Override
+	public double getAddBlockY() {
+		if (sensors > 0 && getOrientation() == Orientation.VERTICAL)
+			return getSensorPosition(0).y / getFactory().getPixelSize();
+	    return super.getAddBlockY();
+	}
 }

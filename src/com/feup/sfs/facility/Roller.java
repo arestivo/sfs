@@ -28,6 +28,7 @@ import net.wimpi.modbus.procimg.SimpleDigitalIn;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
+import com.feup.sfs.facility.Table.Orientation;
 
 public class Roller extends Facility {
 	public enum Orientation {
@@ -190,4 +191,18 @@ public class Roller extends Facility {
 	protected double getBlockDisplacement() {
 		return getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000;
     }
+
+	@Override
+	public double getAddBlockX() {
+		if (sensors > 0 && getOrientation() == Orientation.HORIZONTAL)
+			return getSensorPosition(0).x / getFactory().getPixelSize();
+	    return super.getAddBlockX();
+	}
+
+	@Override
+	public double getAddBlockY() {
+		if (sensors > 0 && getOrientation() == Orientation.VERTICAL)
+			return getSensorPosition(0).y / getFactory().getPixelSize();
+	    return super.getAddBlockY();
+	}	
 }

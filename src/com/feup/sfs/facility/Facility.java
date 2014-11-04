@@ -245,4 +245,12 @@ public abstract class Facility {
 			setDigitalOut(i, false);
 		facilityError = false;
     }
+
+	public double getAddBlockX() {
+		return getBounds().getCenterX();
+    }
+
+	public double getAddBlockY() {
+		return getBounds().getCenterY();
+    }
 }
