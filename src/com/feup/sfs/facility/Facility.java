@@ -235,4 +235,14 @@ public abstract class Facility {
 	public boolean canAddBlocks() {
 		return true;
 	}
+
+	public boolean isBroken() {
+	    return facilityError;
+    }
+
+	public void fix() {
+		for (int i = 0; i < getNumberDigitalOuts(); i++)
+			setDigitalOut(i, false);
+		facilityError = false;
+    }
 }

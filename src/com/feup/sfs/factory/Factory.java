@@ -22,6 +22,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Menu;
+import java.awt.MenuItem;
 import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
@@ -161,13 +162,23 @@ public class Factory extends JPanel implements ActionListener, KeyListener {
 						}
 						blockMenu.addActionListener(this);
 					}
+
 					Menu actionMenu = new Menu("Actions");
 					Collection<String> actions = facility.getActions();
 					popup.add(actionMenu);
 					for (String action : actions)
 						actionMenu.add(action);
+
+					if (facility.isBroken()) {
+						MenuItem fixItem = new MenuItem("Fix");
+						popup.add(fixItem);
+						fixItem.addActionListener(this);
+					}
+					
 					add(popup);
+					
 					actionMenu.addActionListener(this);
+					
 					popup.show(this, e.getX(), e.getY());
 					break;
 				}
@@ -642,22 +653,31 @@ public class Factory extends JPanel implements ActionListener, KeyListener {
 
 	@Override
 	public void actionPerformed(ActionEvent action) {
-		Menu menu = (Menu) action.getSource();
-		if (popupfacility != null && menu.getLabel().equals("Blocks")) {
-			if (action.getActionCommand().equals("Remove")) {
-				removeBlock(popupblock);
-				if (recorder != null)
-					recorder.blockRemoved(popupblock);
-			} else {
-				BlockType type = BlockType.getBlockType(action.getActionCommand().substring(4));
-				Block block = addBlock(type.getId(), popupfacility.getBounds().getCenterX() * pixelSize, popupfacility.getBounds().getCenterY() * pixelSize);
-				if (recorder != null)
-					recorder.blockAdded(block);
+		if (action.getSource() instanceof Menu) {
+			Menu menu = (Menu) action.getSource();
+			if (popupfacility != null && menu.getLabel().equals("Blocks")) {
+				if (action.getActionCommand().equals("Remove")) {
+					removeBlock(popupblock);
+					if (recorder != null)
+						recorder.blockRemoved(popupblock);
+				} else {
+					BlockType type = BlockType.getBlockType(action.getActionCommand().substring(4));
+					Block block = addBlock(type.getId(), popupfacility.getBounds().getCenterX() * pixelSize, popupfacility.getBounds().getCenterY() * pixelSize);
+					if (recorder != null)
+						recorder.blockAdded(block);
+				}
+			}
+			if (popupfacility != null && menu.getLabel().equals("Actions")) {
+				String actionName = action.getActionCommand();
+				popupfacility.doAction(actionName);
 			}
 		}
-		if (popupfacility != null && menu.getLabel().equals("Actions")) {
-			String actionName = action.getActionCommand();
-			popupfacility.doAction(actionName);
+		
+		if (action.getSource() instanceof MenuItem) {
+			MenuItem item = (MenuItem) action.getSource();
+			if (popupfacility != null && item.getLabel().equals("Fix")) {
+				popupfacility.fix();
+			}
 		}
 	}
 
