@@ -131,17 +131,19 @@ public class Rail extends Conveyor {
 			setDigitalIn(sensors + 1, false);
 
 		if (movedLeft || movedRight) {
+			double displacement = getBlockDisplacement();
+			
 			ArrayList<Block> blocks = getFactory().getBlocks();
 			for (Block block : blocks) {
 				if (getBounds().intersects(block.getBounds())) {
 					if (movedLeft && getOrientation() == Orientation.VERTICAL)
-						block.setMoveLeft(true);
+						block.setMoveLeft(displacement);
 					if (movedRight && getOrientation() == Orientation.VERTICAL)
-						block.setMoveRight(true);
+						block.setMoveRight(displacement);
 					if (movedLeft && getOrientation() == Orientation.HORIZONTAL)
-						block.setMoveTop(true);
+						block.setMoveTop(displacement);
 					if (movedRight && getOrientation() == Orientation.HORIZONTAL)
-						block.setMoveBottom(true);
+						block.setMoveBottom(displacement);
 				}
 			}
 		}

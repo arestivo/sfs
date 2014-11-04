@@ -96,16 +96,19 @@ public class Roller extends Facility {
 			return;
 		ArrayList<Block> blocks = getFactory().getBlocks();
 		boolean middleSensor[] = new boolean[sensors];
+
+		double displacement = getBlockDisplacement();
+		
 		for (Block block : blocks) {
 			if (!conveyorBlocked && getBounds().intersects(block.getBounds())) {
 				if (isRunningLeft())
-					block.setMoveLeft(true);
+					block.setMoveLeft(displacement);
 				if (isRunningRight())
-					block.setMoveRight(true);
+					block.setMoveRight(displacement);
 				if (isRunningTop())
-					block.setMoveTop(true);
+					block.setMoveTop(displacement);
 				if (isRunningBottom())
-					block.setMoveBottom(true);
+					block.setMoveBottom(displacement);
 			}
 			for (int i = 0; i < sensors; i++) {
 				Point2D.Double sp = getSensorPosition(i);
@@ -183,4 +186,8 @@ public class Roller extends Facility {
 	public double getCenterY() {
 		return centerY;
 	}
+	
+	protected double getBlockDisplacement() {
+		return getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000;
+    }
 }

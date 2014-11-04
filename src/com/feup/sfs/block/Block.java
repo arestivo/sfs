@@ -29,10 +29,10 @@ public class Block {
 	private int type;
 	private int nextType;
 
-	private boolean moveLeft;
-	private boolean moveTop;
-	private boolean moveBottom;
-	private boolean moveRight;
+	private double moveLeft;
+	private double moveTop;
+	private double moveBottom;
+	private double moveRight;
 
 	private double centerX;
 	private double centerY;
@@ -73,10 +73,10 @@ public class Block {
 	}
 
 	public void resetMovements() {
-		moveBottom = false;
-		moveLeft = false;
-		moveRight = false;
-		moveTop = false;
+		moveBottom = 0;
+		moveLeft = 0;
+		moveRight = 0;
+		moveTop = 0;
 	}
 
 	public void doStep() {
@@ -86,14 +86,9 @@ public class Block {
 		}
 		oldCenterX = getCenterX();
 		oldCenterY = getCenterY();
-		if (moveLeft)
-			setCenterX(getCenterX() - getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
-		if (moveRight)
-			setCenterX(getCenterX() + getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
-		if (moveTop)
-			setCenterY(getCenterY() - getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
-		if (moveBottom)
-			setCenterY(getCenterY() + getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
+		
+		setCenterX(getCenterX() - moveLeft + moveRight);
+		setCenterY(getCenterY() - moveTop + moveBottom);
 	}
 
 	public void undoStep() {
@@ -167,20 +162,20 @@ public class Block {
 		return new Rectangle(x, y, w, h);
 	}
 
-	public void setMoveLeft(boolean b) {
-		moveLeft = b;
+	public void setMoveLeft(double m) {
+		moveLeft = m;
 	}
 
-	public void setMoveRight(boolean b) {
-		moveRight = b;
+	public void setMoveRight(double m) {
+		moveRight = m;
 	}
 
-	public void setMoveTop(boolean b) {
-		moveTop = b;
+	public void setMoveTop(double m) {
+		moveTop = m;
 	}
 
-	public void setMoveBottom(boolean b) {
-		moveBottom = b;
+	public void setMoveBottom(double m) {
+		moveBottom = m;
 	}
 
 	public double getDistanceTo(double x, double y) {

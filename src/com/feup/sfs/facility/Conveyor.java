@@ -40,6 +40,8 @@ public class Conveyor extends Facility {
 	protected double length;
 	protected double width;
 	protected int sensors;
+	
+	protected double speedDelta;
 
 	protected Orientation orientation;
 
@@ -52,6 +54,7 @@ public class Conveyor extends Facility {
 		length = new Double(properties.getProperty("facility." + id + ".length")).doubleValue();
 		width = new Double(properties.getProperty("facility." + id + ".width")).doubleValue();
 		sensors = new Integer(properties.getProperty("facility." + id + ".sensors", "1")).intValue();
+		speedDelta = getFactory().generateSpeedDelta();
 		
 		if (properties.getProperty("facility." + id + ".orientation").equals("vertical"))
 			orientation = Orientation.VERTICAL;
@@ -107,15 +110,12 @@ public class Conveyor extends Facility {
 		boolean middleSensor[] = new boolean[sensors];
 		for (Block block : blocks) {
 			if (!conveyorBlocked && getBounds().intersects(block.getBounds())) {
-
-				if (isRunningLeft())
-					block.setMoveLeft(true);
-				if (isRunningRight())
-					block.setMoveRight(true);
-				if (isRunningTop())
-					block.setMoveTop(true);
-				if (isRunningBottom())
-					block.setMoveBottom(true);
+				double displacement = getBlockDisplacement();
+				
+				if (isRunningLeft()) block.setMoveLeft(displacement);
+				if (isRunningRight()) block.setMoveRight(displacement);
+				if (isRunningTop()) block.setMoveTop(displacement);
+				if (isRunningBottom()) block.setMoveBottom(displacement);
 			}
 			for (int i = 0; i < sensors; i++) {
 				Point2D.Double sp = getSensorPosition(i);
@@ -205,4 +205,8 @@ public class Conveyor extends Facility {
 	public double getCenterY() {
 		return centerY;
 	}
+	
+	protected double getBlockDisplacement() {
+		return (getFactory().getConveyorSpeed() + speedDelta) * getFactory().getSimulationTime() / 1000;
+    }
 }

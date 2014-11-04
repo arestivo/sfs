@@ -132,17 +132,19 @@ public class Pusher extends Conveyor {
 		else
 			setDigitalIn(sensors + 1, false);
 
+		double displacement = getBlockDisplacement();
+
 		ArrayList<Block> blocks = getFactory().getBlocks();
 		for (Block block : blocks) {
 			if (getPusherBounds().intersects(block.getBounds())) {
 				if (getOrientation() == Orientation.VERTICAL && !invert)
-					block.setMoveRight(true);
+					block.setMoveRight(displacement);
 				if (getOrientation() == Orientation.VERTICAL && invert)
-					block.setMoveLeft(true);
+					block.setMoveLeft(displacement);
 				if (getOrientation() == Orientation.HORIZONTAL && !invert)
-					block.setMoveBottom(true);
+					block.setMoveBottom(displacement);
 				if (getOrientation() == Orientation.HORIZONTAL && invert)
-					block.setMoveTop(true);
+					block.setMoveTop(displacement);
 			}
 		}
 		isForcing(forcing);
