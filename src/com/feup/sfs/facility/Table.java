@@ -28,7 +28,6 @@ import net.wimpi.modbus.procimg.SimpleDigitalIn;
 
 import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
-import com.feup.sfs.facility.Conveyor.Orientation;
 
 public class Table extends Facility {
 	public enum Orientation {
