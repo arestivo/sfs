@@ -24,7 +24,7 @@ public class Tool {
 	public Tool(String color) {
 		this.color = Color.decode("0x" + color);
 	}
-	
+
 	public void setColor(Color color) {
 		this.color = color;
 	}

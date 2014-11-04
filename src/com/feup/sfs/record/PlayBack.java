@@ -13,13 +13,13 @@ import com.feup.sfs.modbus.ModbusSlave;
 
 public class PlayBack {
 	private HashMap<Long, ArrayList<String>> commands = new HashMap<Long, ArrayList<String>>();
-	
+
 	public PlayBack(String file) {
 		BufferedReader br = null;
 		boolean randomSeed = false;
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-		} catch (FileNotFoundException e) {	
+		} catch (FileNotFoundException e) {
 			System.out.println("Error reading file: " + file);
 		}
 		try {
@@ -36,7 +36,8 @@ public class PlayBack {
 				String command = line.substring(pos + 1);
 
 				ArrayList<String> current = commands.get(time);
-				if (current == null) current = new ArrayList<String>();
+				if (current == null)
+					current = new ArrayList<String>();
 				current.add(command);
 				commands.put(time, current);
 			}
@@ -47,7 +48,8 @@ public class PlayBack {
 
 	public void play(long time) {
 		ArrayList<String> cmds = commands.get(new Long(time));
-		if (cmds == null) return;
+		if (cmds == null)
+			return;
 		for (String cmd : cmds) {
 			playCommand(cmd);
 		}
@@ -55,23 +57,28 @@ public class PlayBack {
 
 	private void playCommand(String cmd) {
 		int pos = cmd.indexOf(' ');
-		String type = cmd.substring(0,pos);
+		String type = cmd.substring(0, pos);
 		cmd = cmd.substring(pos + 1);
 		pos = cmd.indexOf(' ');
 		if (type.equals("OUT") || type.equals("REG")) {
-			int reg = new Integer(cmd.substring(0,pos)).intValue();
+			int reg = new Integer(cmd.substring(0, pos)).intValue();
 			int value = new Integer(cmd.substring(pos + 1)).intValue();
-			if (type.equals("OUT"))	ModbusSlave.getSimpleProcessImage().getDigitalOut(reg).set(value==1);
-			if (type.equals("REG"))	ModbusSlave.getSimpleProcessImage().getRegister(reg).setValue(value);
+			if (type.equals("OUT"))
+				ModbusSlave.getSimpleProcessImage().getDigitalOut(reg).set(value == 1);
+			if (type.equals("REG"))
+				ModbusSlave.getSimpleProcessImage().getRegister(reg).setValue(value);
 		}
 		if (type.equals("ADD")) {
-			double x = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue(); cmd = cmd.substring(cmd.indexOf(' ') + 1);
-			double y = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue(); cmd = cmd.substring(cmd.indexOf(' ') + 1);
+			double x = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue();
+			cmd = cmd.substring(cmd.indexOf(' ') + 1);
+			double y = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue();
+			cmd = cmd.substring(cmd.indexOf(' ') + 1);
 			int t = new Integer(cmd).intValue();
 			Factory.getInstance().addBlock(t, x, y);
 		}
 		if (type.equals("REM")) {
-			double x = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue(); cmd = cmd.substring(cmd.indexOf(' ') + 1);
+			double x = new Double(cmd.substring(0, cmd.indexOf(' '))).doubleValue();
+			cmd = cmd.substring(cmd.indexOf(' ') + 1);
 			double y = new Double(cmd).doubleValue();
 			Factory.getInstance().removeBlockAt(x, y);
 		}

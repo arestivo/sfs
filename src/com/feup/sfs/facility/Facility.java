@@ -33,7 +33,7 @@ import com.feup.sfs.modbus.ModbusSlave;
 
 public abstract class Facility {
 	private int id;
-	
+
 	private int digitalOutStart, digitalOutEnd;
 	private int digitalInStart, digitalInEnd;
 	private int registerStart, registerEnd;
@@ -41,28 +41,28 @@ public abstract class Facility {
 	private LinkedList<String> digitalOutNames = new LinkedList<String>();
 	private LinkedList<String> digitalInNames = new LinkedList<String>();
 	private LinkedList<String> registerNames = new LinkedList<String>();
-	
+
 	private int timeForcing;
-	
+
 	protected boolean facilityError;
 
-	private String alias; 
-	
-	public Factory getFactory(){
+	private String alias;
+
+	public Factory getFactory() {
 		return Factory.getInstance();
 	}
 
 	public abstract String getName();
-	
-	public Facility(Properties properties, int id){
+
+	public Facility(Properties properties, int id) {
 		this.id = id;
-		
-		alias = properties.getProperty("facility."+id+".alias", getName() + " #" + id);
+
+		alias = properties.getProperty("facility." + id + ".alias", getName() + " #" + id);
 
 		digitalInStart = digitalInEnd = ModbusSlave.getSimpleProcessImage().getDigitalInCount();
 		digitalOutStart = digitalOutEnd = ModbusSlave.getSimpleProcessImage().getDigitalOutCount();
 		registerStart = registerEnd = ModbusSlave.getSimpleProcessImage().getRegisterCount();
-		
+
 		timeForcing = 0;
 		facilityError = false;
 	}
@@ -70,48 +70,59 @@ public abstract class Facility {
 	public boolean getDigitalIn(int i) {
 		return ModbusSlave.getSimpleProcessImage().getDigitalIn(digitalInStart + i).isSet();
 	}
-	
+
 	public boolean getDigitalOut(int i) {
 		return ModbusSlave.getSimpleProcessImage().getDigitalOut(digitalOutStart + i).isSet();
 	}
 
 	protected void setDigitalIn(int i, boolean b) {
-		((SimpleDigitalIn)ModbusSlave.getSimpleProcessImage().getDigitalIn(digitalInStart + i)).set(b);
+		((SimpleDigitalIn) ModbusSlave.getSimpleProcessImage().getDigitalIn(digitalInStart + i)).set(b);
 	}
 
 	protected void setDigitalOut(int i, boolean b) {
-		((SimpleDigitalOut)ModbusSlave.getSimpleProcessImage().getDigitalOut(digitalOutStart + i)).set(b);
+		((SimpleDigitalOut) ModbusSlave.getSimpleProcessImage().getDigitalOut(digitalOutStart + i)).set(b);
 	}
-	
-	public int getRegister(int i){
+
+	public int getRegister(int i) {
 		return ModbusSlave.getSimpleProcessImage().getRegister(registerStart + i).getValue();
 	}
-	
-	public int getId(){
+
+	public int getId() {
 		return id;
 	}
-	
+
 	public abstract void paint(Graphics g);
 
 	public abstract void doStep(boolean conveyorBlocked);
-	
+
 	public abstract Rectangle getBounds();
 
 	protected void paintLight(Graphics g, boolean type, int position, boolean value, int line) {
 		double pixelSize = Factory.getInstance().getPixelSize();
 		int x = (int) ((position + 0.5) * .2 / pixelSize);
 		int y = (int) ((line + 0.5) * .2 / pixelSize);
-		if (value) g.setColor(Color.green); else g.setColor(Color.red);
-		g.fillRect(getBounds().x + x, getBounds().y + y, (int)(.1 / pixelSize), (int)(.1 / pixelSize));
+		
+		if (value)
+			g.setColor(Color.green);
+		else
+			g.setColor(Color.red);
+		
+		g.fillRect(getBounds().x + x, getBounds().y + y, (int) (.1 / pixelSize), (int) (.1 / pixelSize));
+		
 		g.setColor(Color.black);
-		if (type) g.drawRect(getBounds().x + x - 1, getBounds().y + y - 1, (int)(.1 / pixelSize) + 1, (int)(.1 / pixelSize) + 1);
+		if (type)
+			g.drawRect(getBounds().x + x - 1, getBounds().y + y - 1, (int) (.1 / pixelSize) + 1, (int) (.1 / pixelSize) + 1);
 	}
-	
+
 	protected void isForcing(boolean forcing) {
-		if (facilityError) return;
-		if (forcing) timeForcing += getFactory().getSimulationTime();
-		else timeForcing = 0;
-		if (timeForcing >= getFactory().getErrorTime()) facilityError = true;
+		if (facilityError)
+			return;
+		if (forcing)
+			timeForcing += getFactory().getSimulationTime();
+		else
+			timeForcing = 0;
+		if (timeForcing >= getFactory().getErrorTime())
+			facilityError = true;
 	}
 
 	public void paintTop(Graphics g) {
@@ -124,7 +135,7 @@ public abstract class Facility {
 	public String getMessage() {
 		return "";
 	}
-	
+
 	protected void addDigitalOut(SimpleDigitalOut simpleDigitalOut, String name) {
 		ModbusSlave.getSimpleProcessImage().addDigitalOut(simpleDigitalOut);
 		digitalOutNames.add(name);
@@ -143,13 +154,29 @@ public abstract class Facility {
 		registerEnd++;
 	}
 
-	public int getNumberDigitalIns() { return digitalInEnd - digitalInStart; }
-	public int getNumberDigitalOuts() {	return digitalOutEnd - digitalOutStart; }
-	public int getNumberRegisters() { return registerEnd - registerStart; }
+	public int getNumberDigitalIns() {
+		return digitalInEnd - digitalInStart;
+	}
 
-	public int getFirstDigitalIn() { return digitalInStart; }
-	public int getFirstDigitalOut() { return digitalOutStart; }
-	public int getFirstRegister() {	return registerStart; }
+	public int getNumberDigitalOuts() {
+		return digitalOutEnd - digitalOutStart;
+	}
+
+	public int getNumberRegisters() {
+		return registerEnd - registerStart;
+	}
+
+	public int getFirstDigitalIn() {
+		return digitalInStart;
+	}
+
+	public int getFirstDigitalOut() {
+		return digitalOutStart;
+	}
+
+	public int getFirstRegister() {
+		return registerStart;
+	}
 
 	public final Collection<String> getActions() {
 		return digitalOutNames;
@@ -166,7 +193,8 @@ public abstract class Facility {
 
 	public void stop() {
 		int ndo = getNumberDigitalOuts();
-		for (int i = 0; i < ndo; i++) setDigitalOut(i, false);
+		for (int i = 0; i < ndo; i++)
+			setDigitalOut(i, false);
 	}
 
 	public void writeMap(PrintStream ps) {
@@ -176,30 +204,30 @@ public abstract class Facility {
 		ps.println("  Digital Outs");
 		ps.println("  ------------");
 		for (int i = digitalOutStart; i < digitalOutEnd; i++)
-			ps.println ("   " + i + " : " + digitalOutNames.get(i - digitalOutStart));
+			ps.println("   " + i + " : " + digitalOutNames.get(i - digitalOutStart));
 		ps.println("");
 		ps.println("  Digital Ins");
 		ps.println("  -----------");
 		for (int i = digitalInStart; i < digitalInEnd; i++)
-			ps.println ("   " + i + " : " + digitalInNames.get(i - digitalInStart));
+			ps.println("   " + i + " : " + digitalInNames.get(i - digitalInStart));
 		if (registerStart != registerEnd) {
 			ps.println("");
 			ps.println("  Registers");
 			ps.println("  ---------");
 			for (int i = registerStart; i < registerEnd; i++)
-				ps.println ("   " + i + " : " + registerNames.get(i - registerStart));
+				ps.println("   " + i + " : " + registerNames.get(i - registerStart));
 		}
 	}
 
 	public void writeCsv(PrintStream ps) {
 		for (int i = digitalOutStart; i < digitalOutEnd; i++)
-			ps.println (getId() + "," + getAlias() + "," + getName() + ",O," + digitalOutNames.get(i - digitalOutStart) + "," + i);
+			ps.println(getId() + "," + getAlias() + "," + getName() + ",O," + digitalOutNames.get(i - digitalOutStart) + "," + i);
 		for (int i = digitalInStart; i < digitalInEnd; i++)
-			ps.println (getId() + "," + getAlias() + "," + getName() + ",I," + digitalInNames.get(i - digitalInStart) + "," + i);
+			ps.println(getId() + "," + getAlias() + "," + getName() + ",I," + digitalInNames.get(i - digitalInStart) + "," + i);
 		for (int i = registerStart; i < registerEnd; i++)
-			ps.println (getId() + "," + getAlias() + "," + getName() + ",R," + registerNames.get(i - registerStart) + "," + i);
+			ps.println(getId() + "," + getAlias() + "," + getName() + ",R," + registerNames.get(i - registerStart) + "," + i);
 	}
-	
+
 	private String getAlias() {
 		return alias;
 	}

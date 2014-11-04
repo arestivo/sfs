@@ -31,53 +31,55 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 public class Pusher extends Conveyor {
 	protected double currentPushPosition = 0;
 	protected boolean invert = false;
-	
+
 	public Pusher(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
-		
-		if (properties.containsKey("facility."+id+".invert") && properties.getProperty("facility."+id+".invert").equals("true"))
+
+		if (properties.containsKey("facility." + id + ".invert") && properties.getProperty("facility." + id + ".invert").equals("true"))
 			invert = true;
-		
+
 		addDigitalOut(new SimpleDigitalOut(false), "Push -");
 		addDigitalOut(new SimpleDigitalOut(false), "Push +");
-		addDigitalIn(new SimpleDigitalIn(false), "Push - Sensor");	
-		addDigitalIn(new SimpleDigitalIn(false), "Push + Sensor");	
+		addDigitalIn(new SimpleDigitalIn(false), "Push - Sensor");
+		addDigitalIn(new SimpleDigitalIn(false), "Push + Sensor");
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Pusher";
 	}
-	
-	public void paint(Graphics g){
+
+	public void paint(Graphics g) {
 		super.paint(g);
 
 		Rectangle bounds = getBounds();
 		g.setColor(Color.darkGray);
-		
+
 		double pixelSize = getFactory().getPixelSize();
 		double blockSize = getFactory().getBlockSize() / pixelSize;
 
-		if (getOrientation()==Orientation.VERTICAL) {
-			int centerY = bounds.y + bounds.height / 2; 
+		if (getOrientation() == Orientation.VERTICAL) {
+			int centerY = bounds.y + bounds.height / 2;
 			if (!invert) {
-				g.fillRect((int)(bounds.x - blockSize / 4 + bounds.width * currentPushPosition / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
-				g.fillRect((int)(bounds.x - blockSize / 4), (int)(centerY - blockSize / 8), (int)(bounds.width * currentPushPosition / width + 1), (int)blockSize / 4);
+				g.fillRect((int) (bounds.x - blockSize / 4 + bounds.width * currentPushPosition / width), (int) (centerY - blockSize / 2), (int) (blockSize / 4), (int) blockSize);
+				g.fillRect((int) (bounds.x - blockSize / 4), (int) (centerY - blockSize / 8), (int) (bounds.width * currentPushPosition / width + 1), (int) blockSize / 4);
 			} else {
-				g.fillRect((int)(bounds.x + bounds.width * (width - currentPushPosition) / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
-				g.fillRect((int)(bounds.x + bounds.width + blockSize / 4) - (int)(bounds.width * currentPushPosition / width + 1), (int)(centerY - blockSize / 8), (int)(bounds.width * currentPushPosition / width + 1), (int)blockSize / 4);
+				g.fillRect((int) (bounds.x + bounds.width * (width - currentPushPosition) / width), (int) (centerY - blockSize / 2), (int) (blockSize / 4), (int) blockSize);
+				g.fillRect((int) (bounds.x + bounds.width + blockSize / 4) - (int) (bounds.width * currentPushPosition / width + 1), (int) (centerY - blockSize / 8), (int) (bounds.width
+				        * currentPushPosition / width + 1), (int) blockSize / 4);
 			}
 		} else {
-			int centerX = bounds.x + bounds.width / 2; 
+			int centerX = bounds.x + bounds.width / 2;
 			if (!invert) {
-				g.fillRect((int)(centerX - blockSize / 2), (int)(bounds.y - blockSize / 4 + bounds.height * currentPushPosition / width), (int)blockSize, (int)(blockSize / 4));
-				g.fillRect((int)(centerX - blockSize / 8), (int)(bounds.y - blockSize / 4), (int)blockSize / 4, (int)(bounds.height * currentPushPosition / width + 1));
+				g.fillRect((int) (centerX - blockSize / 2), (int) (bounds.y - blockSize / 4 + bounds.height * currentPushPosition / width), (int) blockSize, (int) (blockSize / 4));
+				g.fillRect((int) (centerX - blockSize / 8), (int) (bounds.y - blockSize / 4), (int) blockSize / 4, (int) (bounds.height * currentPushPosition / width + 1));
 			} else {
-				g.fillRect((int)(centerX - blockSize / 2), (int)(bounds.y + bounds.height * (width - currentPushPosition) / width), (int)blockSize, (int)(blockSize / 4));
-				g.fillRect((int)(centerX - blockSize / 8), (int)(bounds.y + bounds.height + blockSize / 4) - (int)(bounds.height * currentPushPosition / width + 1), (int)blockSize / 4, (int)(bounds.height * currentPushPosition / width + 1));				
+				g.fillRect((int) (centerX - blockSize / 2), (int) (bounds.y + bounds.height * (width - currentPushPosition) / width), (int) blockSize, (int) (blockSize / 4));
+				g.fillRect((int) (centerX - blockSize / 8), (int) (bounds.y + bounds.height + blockSize / 4) - (int) (bounds.height * currentPushPosition / width + 1), (int) blockSize / 4,
+				        (int) (bounds.height * currentPushPosition / width + 1));
 			}
 		}
-		
+
 		paintLight(g, false, 0, getDigitalOut(2), 1);
 		paintLight(g, true, 1, getDigitalIn(sensors), 1);
 		paintLight(g, true, 2, getDigitalIn(sensors + 1), 1);
@@ -88,42 +90,59 @@ public class Pusher extends Conveyor {
 		Rectangle bounds = getBounds();
 		double pixelSize = getFactory().getPixelSize();
 		double blockSize = getFactory().getBlockSize() / pixelSize;
-		int centerY = bounds.y + bounds.height / 2; 
-		int centerX = bounds.x + bounds.width / 2; 
+		int centerY = bounds.y + bounds.height / 2;
+		int centerX = bounds.x + bounds.width / 2;
 
-		if (getOrientation()==Orientation.VERTICAL && !invert) 
-			return new Rectangle((int)(bounds.x - blockSize / 4 + bounds.width * currentPushPosition / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
-		else if (getOrientation()==Orientation.VERTICAL && invert) 
-			return new Rectangle((int)(bounds.x + bounds.width * (width - currentPushPosition) / width), (int)(centerY - blockSize / 2), (int)(blockSize / 4), (int)blockSize);
-		else if (getOrientation()==Orientation.HORIZONTAL && !invert) 
-			return new Rectangle((int)(centerX - blockSize / 2), (int)(bounds.y - blockSize / 4 + bounds.height * currentPushPosition / width), (int)blockSize, (int)(blockSize / 4));
-		else 
-			return new Rectangle((int)(centerX - blockSize / 2), (int)(bounds.y + bounds.height * (width - currentPushPosition) / width), (int)blockSize, (int)(blockSize / 4));
+		if (getOrientation() == Orientation.VERTICAL && !invert)
+			return new Rectangle((int) (bounds.x - blockSize / 4 + bounds.width * currentPushPosition / width), (int) (centerY - blockSize / 2), (int) (blockSize / 4), (int) blockSize);
+		else if (getOrientation() == Orientation.VERTICAL && invert)
+			return new Rectangle((int) (bounds.x + bounds.width * (width - currentPushPosition) / width), (int) (centerY - blockSize / 2), (int) (blockSize / 4), (int) blockSize);
+		else if (getOrientation() == Orientation.HORIZONTAL && !invert)
+			return new Rectangle((int) (centerX - blockSize / 2), (int) (bounds.y - blockSize / 4 + bounds.height * currentPushPosition / width), (int) blockSize, (int) (blockSize / 4));
+		else
+			return new Rectangle((int) (centerX - blockSize / 2), (int) (bounds.y + bounds.height * (width - currentPushPosition) / width), (int) blockSize, (int) (blockSize / 4));
 	}
-	
+
 	@Override
-	public void doStep(boolean conveyorBlocked){
-		if (facilityError) return;
+	public void doStep(boolean conveyorBlocked) {
+		if (facilityError)
+			return;
 		boolean forcing = false;
 		super.doStep(currentPushPosition != 0);
 		if (isPushing() && !isRetracting()) {
 			currentPushPosition += getFactory().getPushSpeed() * getFactory().getSimulationTime() / 1000.0;
-			if (currentPushPosition > width) {currentPushPosition = width; forcing = true;}
+			if (currentPushPosition > width) {
+				currentPushPosition = width;
+				forcing = true;
+			}
 		}
 		if (!isPushing() && isRetracting()) {
 			currentPushPosition -= getFactory().getPushSpeed() * getFactory().getSimulationTime() / 1000.0;
-			if (currentPushPosition < 0) {currentPushPosition = 0; forcing = true;}
+			if (currentPushPosition < 0) {
+				currentPushPosition = 0;
+				forcing = true;
+			}
 		}
-		if (currentPushPosition == 0)   setDigitalIn(sensors, true); else setDigitalIn(sensors, false);
-		if (currentPushPosition == width) setDigitalIn(sensors + 1, true); else setDigitalIn(sensors + 1, false);
-		
+		if (currentPushPosition == 0)
+			setDigitalIn(sensors, true);
+		else
+			setDigitalIn(sensors, false);
+		if (currentPushPosition == width)
+			setDigitalIn(sensors + 1, true);
+		else
+			setDigitalIn(sensors + 1, false);
+
 		ArrayList<Block> blocks = getFactory().getBlocks();
 		for (Block block : blocks) {
-			if (getPusherBounds().intersects(block.getBounds())){
-				if (getOrientation()==Orientation.VERTICAL && !invert) block.setMoveRight(true);
-				if (getOrientation()==Orientation.VERTICAL && invert) block.setMoveLeft(true);
-				if (getOrientation()==Orientation.HORIZONTAL && !invert) block.setMoveBottom(true);
-				if (getOrientation()==Orientation.HORIZONTAL && invert) block.setMoveTop(true);
+			if (getPusherBounds().intersects(block.getBounds())) {
+				if (getOrientation() == Orientation.VERTICAL && !invert)
+					block.setMoveRight(true);
+				if (getOrientation() == Orientation.VERTICAL && invert)
+					block.setMoveLeft(true);
+				if (getOrientation() == Orientation.HORIZONTAL && !invert)
+					block.setMoveBottom(true);
+				if (getOrientation() == Orientation.HORIZONTAL && invert)
+					block.setMoveTop(true);
 			}
 		}
 		isForcing(forcing);

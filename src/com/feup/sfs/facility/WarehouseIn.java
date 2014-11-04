@@ -25,21 +25,22 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.factory.Factory;
 import com.feup.sfs.warehouse.Warehouse;
 
-public class WarehouseIn extends Conveyor{
+public class WarehouseIn extends Conveyor {
 	private int warehouse;
 	private boolean lastvalue = false;
-	
-	public WarehouseIn(Properties properties, int id)	throws FactoryInitializationException {
+
+	public WarehouseIn(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
-		
-		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
-		
+
+		this.warehouse = new Integer(properties.getProperty("facility." + id + ".warehouse")).intValue();
+
 		addDigitalOut(new SimpleDigitalOut(false), "Warehouse In");
 	}
 
-	public void doStep(boolean conveyorBlocked){
+	public void doStep(boolean conveyorBlocked) {
 		super.doStep(conveyorBlocked);
-		if (facilityError) return;
+		if (facilityError)
+			return;
 		boolean newvalue = isInOn();
 		if (!lastvalue && newvalue) {
 			Warehouse w = Factory.getInstance().getWarehouse(warehouse);
@@ -47,12 +48,12 @@ public class WarehouseIn extends Conveyor{
 		}
 		lastvalue = newvalue;
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Warehouse In";
 	}
-	
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);

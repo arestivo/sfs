@@ -24,35 +24,38 @@ import com.feup.sfs.block.Block;
 import com.feup.sfs.exceptions.FactoryInitializationException;
 import com.feup.sfs.factory.Factory;
 
-public class WarehouseOut extends Conveyor{
+public class WarehouseOut extends Conveyor {
 	private int warehouse;
 	private int lastValue;
-	
-	public WarehouseOut(Properties properties, int id)	throws FactoryInitializationException {
+
+	public WarehouseOut(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
-		
+
 		addRegister(new SimpleInputRegister(0), "Warehouse Out");
-		this.warehouse = new Integer(properties.getProperty("facility."+id+".warehouse")).intValue();
+		this.warehouse = new Integer(properties.getProperty("facility." + id + ".warehouse")).intValue();
 		this.lastValue = 0;
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Warehouse Out";
 	}
 
-	public void doStep(boolean conveyorBlocked){
+	public void doStep(boolean conveyorBlocked) {
 		super.doStep(conveyorBlocked);
-		if (facilityError) return;
+		if (facilityError)
+			return;
 		int newValue = getRegister(0);
-		if (newValue != 0 && lastValue == 0) Factory.getInstance().getWarehouse(warehouse).addOrder(this, newValue);
+		if (newValue != 0 && lastValue == 0)
+			Factory.getInstance().getWarehouse(warehouse).addOrder(this, newValue);
 		lastValue = newValue;
 	}
 
 	public boolean isClear() {
 		for (Block block : Factory.getInstance().getBlocks()) {
-			if (block.getDistanceTo(getCenterX(), getCenterY()) < Factory.getInstance().getBlockSize()) return false;
-		} 
+			if (block.getDistanceTo(getCenterX(), getCenterY()) < Factory.getInstance().getBlockSize())
+				return false;
+		}
 		return true;
 	}
 }

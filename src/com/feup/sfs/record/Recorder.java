@@ -34,7 +34,7 @@ public class Recorder {
 	private PrintStream ps = null;
 	private ArrayList<Block> addedBlocks = new ArrayList<Block>();
 	private ArrayList<Block> removedBlocks = new ArrayList<Block>();
-	
+
 	public Recorder(String file) throws FileNotFoundException {
 		System.out.println("Recording to: " + file);
 		ps = new PrintStream(new FileOutputStream(file));
@@ -42,37 +42,37 @@ public class Recorder {
 		Factory.setRandomSeed(seed);
 		ps.println(seed);
 	}
-	
+
 	private void init() {
 		ArrayList<Facility> facilities = Factory.getInstance().getFacilities();
 		for (Facility facility : facilities) {
 			for (int d = 0; d < facility.getNumberDigitalIns(); d++)
-				inputs.add(new Integer(facility.getDigitalIn(d)?1:0));
+				inputs.add(new Integer(facility.getDigitalIn(d) ? 1 : 0));
 
 			for (int d = 0; d < facility.getNumberDigitalOuts(); d++)
-				outputs.add(new Integer(facility.getDigitalOut(d)?1:0));
+				outputs.add(new Integer(facility.getDigitalOut(d) ? 1 : 0));
 
 			for (int d = 0; d < facility.getNumberRegisters(); d++)
 				registers.add(new Integer(facility.getRegister(d)));
 		}
 		initialized = true;
 	}
-	
+
 	private void printDeltas(long l) {
 		ArrayList<Facility> facilities = Factory.getInstance().getFacilities();
 		int i = 0, o = 0, r = 0;
 		for (Facility facility : facilities) {
 			for (int d = 0; d < facility.getNumberDigitalIns(); d++) {
-				int v = facility.getDigitalIn(d)?1:0;
-				if (inputs.elementAt(i).intValue()!=v) {
+				int v = facility.getDigitalIn(d) ? 1 : 0;
+				if (inputs.elementAt(i).intValue() != v) {
 					ps.println(l + " IN " + i + " " + v);
 					inputs.setElementAt(new Integer(v), i);
 				}
 				i++;
 			}
 			for (int d = 0; d < facility.getNumberDigitalOuts(); d++) {
-				int v = facility.getDigitalOut(d)?1:0;
-				if (outputs.elementAt(o).intValue()!=v) {
+				int v = facility.getDigitalOut(d) ? 1 : 0;
+				if (outputs.elementAt(o).intValue() != v) {
 					ps.println(l + " OUT " + o + " " + v);
 					outputs.setElementAt(new Integer(v), o);
 				}
@@ -80,23 +80,25 @@ public class Recorder {
 			}
 			for (int d = 0; d < facility.getNumberRegisters(); d++) {
 				int v = facility.getRegister(d);
-				if (registers.elementAt(r).intValue()!=v) {
+				if (registers.elementAt(r).intValue() != v) {
 					ps.println(l + " REG " + r + " " + v);
 					registers.setElementAt(new Integer(v), r);
 				}
 				r++;
 			}
 
-		}		
+		}
 	}
-	
+
 	public void blockAdded(Block block) {
 		addedBlocks.add(block);
 	}
-	
+
 	public void record(long l) {
-		if (!initialized) init();
-		else printDeltas(l);
+		if (!initialized)
+			init();
+		else
+			printDeltas(l);
 		printAddedBlocks(l);
 		printRemovedBlocks(l);
 	}
@@ -116,6 +118,6 @@ public class Recorder {
 	}
 
 	public void blockRemoved(Block block) {
-		removedBlocks.add(block);		
+		removedBlocks.add(block);
 	}
 }

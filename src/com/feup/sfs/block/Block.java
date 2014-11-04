@@ -28,25 +28,25 @@ public class Block {
 	private Factory factory;
 	private int type;
 	private int nextType;
-	
+
 	private boolean moveLeft;
 	private boolean moveTop;
 	private boolean moveBottom;
 	private boolean moveRight;
-	
+
 	private double centerX;
 	private double centerY;
 	private double oldCenterX;
 	private double oldCenterY;
-	
+
 	private long duration;
 	private long currentWork = 0;
-	
+
 	private boolean onTheFloor = false;
 	private int timeOnTheFloor = 0;
-	
+
 	private double height;
-	
+
 	public Block(Factory factory, int type, double centerX, double centerY) {
 		this.factory = factory;
 		this.type = type;
@@ -71,28 +71,32 @@ public class Block {
 	public int getType() {
 		return type;
 	}
-	
-	public void resetMovements(){
+
+	public void resetMovements() {
 		moveBottom = false;
 		moveLeft = false;
 		moveRight = false;
 		moveTop = false;
 	}
-	
-	public void doStep(){
+
+	public void doStep() {
 		if (onTheFloor) {
 			timeOnTheFloor += getFactory().getSimulationTime();
 			return;
 		}
 		oldCenterX = getCenterX();
 		oldCenterY = getCenterY();
-		if (moveLeft) setCenterX(getCenterX() - getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000);
-		if (moveRight) setCenterX(getCenterX() + getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000);
-		if (moveTop) setCenterY(getCenterY() - getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000);
-		if (moveBottom) setCenterY(getCenterY() + getFactory().getConveyorSpeed()*getFactory().getSimulationTime()/1000);
+		if (moveLeft)
+			setCenterX(getCenterX() - getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
+		if (moveRight)
+			setCenterX(getCenterX() + getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
+		if (moveTop)
+			setCenterY(getCenterY() - getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
+		if (moveBottom)
+			setCenterY(getCenterY() + getFactory().getConveyorSpeed() * getFactory().getSimulationTime() / 1000);
 	}
-	
-	public void undoStep(){
+
+	public void undoStep() {
 		setCenterX(oldCenterX);
 		setCenterY(oldCenterY);
 	}
@@ -104,71 +108,86 @@ public class Block {
 
 	public void paint(Graphics g) {
 		g.setColor(getColor(type));
-		
+
 		SHAPE shape = BlockType.getBlockType(type).getShape();
 
 		switch (shape) {
-			case ROUNDED_SQUARE:
-				g.fillRoundRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height, getBounds().width / 2, getBounds().height / 2); break;
-			case SQUARE:
-				g.fillRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
-			case CIRCLE:
-				g.fillOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
+		case ROUNDED_SQUARE:
+			g.fillRoundRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height, getBounds().width / 2, getBounds().height / 2);
+			break;
+		case SQUARE:
+			g.fillRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+			break;
+		case CIRCLE:
+			g.fillOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+			break;
 		}
 
 		if (nextType != -1) {
 			g.setColor(Color.red);
 			g.drawOval(getBounds().x - 1, getBounds().y - 1, getBounds().width + 2, getBounds().height + 2);
 		}
-		
+
 		if (nextType != -1) {
 			g.setColor(getColor(nextType));
-			int angle = (int) (360*((double)(duration - currentWork)/duration));
-			while (angle < 0) angle += 360;
-			while (angle > 360) angle -= 360;
+			int angle = (int) (360 * ((double) (duration - currentWork) / duration));
+			while (angle < 0)
+				angle += 360;
+			while (angle > 360)
+				angle -= 360;
 			angle = 360 - angle;
 			g.fillArc(getBounds().x, getBounds().y, getBounds().width, getBounds().height, 0, angle);
 		}
-		
+
 		g.setColor(Color.black);
 		switch (shape) {
-			case ROUNDED_SQUARE:
-				g.drawRoundRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height, getBounds().width / 2, getBounds().height / 2); break;
-			case SQUARE:
-				g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
-			case CIRCLE:
-				g.drawOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height); break;
+		case ROUNDED_SQUARE:
+			g.drawRoundRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height, getBounds().width / 2, getBounds().height / 2);
+			break;
+		case SQUARE:
+			g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+			break;
+		case CIRCLE:
+			g.drawOval(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+			break;
 		}
 	}
 
 	public Rectangle getBounds() {
 		double blockSize = factory.getBlockSize();
-		if (onTheFloor) blockSize /= 2;
-		else blockSize *= height;
+		if (onTheFloor)
+			blockSize /= 2;
+		else
+			blockSize *= height;
 		double pixelSize = factory.getPixelSize();
-		int x = (int) ((getCenterX() - blockSize/2)/pixelSize);
-		int y = (int) ((getCenterY() - blockSize/2)/pixelSize);
-		int w = (int) (blockSize/pixelSize);
-		int h = (int) (blockSize/pixelSize);
-		return new Rectangle(x,y,w,h);
+		int x = (int) ((getCenterX() - blockSize / 2) / pixelSize);
+		int y = (int) ((getCenterY() - blockSize / 2) / pixelSize);
+		int w = (int) (blockSize / pixelSize);
+		int h = (int) (blockSize / pixelSize);
+		return new Rectangle(x, y, w, h);
 	}
 
 	public void setMoveLeft(boolean b) {
 		moveLeft = b;
 	}
+
 	public void setMoveRight(boolean b) {
 		moveRight = b;
 	}
+
 	public void setMoveTop(boolean b) {
 		moveTop = b;
 	}
+
 	public void setMoveBottom(boolean b) {
 		moveBottom = b;
 	}
 
 	public double getDistanceTo(double x, double y) {
-		double xpart = getCenterX() - x; xpart *= xpart; 
-		double ypart = getCenterY() - y; ypart *= ypart;
+		double xpart = getCenterX() - x;
+		xpart *= xpart;
+		double ypart = getCenterY() - y;
+		ypart *= ypart;
 		return Math.sqrt(xpart + ypart);
 	}
 
@@ -197,19 +216,37 @@ public class Block {
 	}
 
 	public void doWork(int tool, long step) {
-		if (type == 0) return;
+		if (type == 0)
+			return;
 		int transformation = getFactory().getTransformation(type, tool);
 		duration = getFactory().getTransformationTime(type, tool);
-		if (nextType!=-1 && nextType != transformation) {type = 0; nextType = -1;}
-		else if (nextType==-1) nextType = transformation;
-		if (nextType == transformation) currentWork += step;
-		if (Math.abs(currentWork) > duration + duration / 10) {type = 0; nextType = -1;}
+		if (nextType != -1 && nextType != transformation) {
+			type = 0;
+			nextType = -1;
+		} else if (nextType == -1)
+			nextType = transformation;
+		if (nextType == transformation)
+			currentWork += step;
+		if (Math.abs(currentWork) > duration + duration / 10) {
+			type = 0;
+			nextType = -1;
+		}
 	}
-	
-	public void stopWork(){
-		if (type == 0) {nextType = -1; return;}
-		if (Math.abs(currentWork - duration) < duration / 10) {type = nextType; nextType = -1; currentWork = 0;}
-		else if (currentWork > duration + duration / 10) {type = 0; nextType = -1; currentWork = 0;}
+
+	public void stopWork() {
+		if (type == 0) {
+			nextType = -1;
+			return;
+		}
+		if (Math.abs(currentWork - duration) < duration / 10) {
+			type = nextType;
+			nextType = -1;
+			currentWork = 0;
+		} else if (currentWork > duration + duration / 10) {
+			type = 0;
+			nextType = -1;
+			currentWork = 0;
+		}
 	}
 
 	public void setOnTheFloor(boolean onTheFloor) {
@@ -233,6 +270,6 @@ public class Block {
 	}
 
 	public Rectangle getCenterBounds() {
-		return new Rectangle(getBounds().x + getBounds().width / 4, getBounds().y  + getBounds().height / 4, getBounds().width / 2, getBounds().height / 2);
+		return new Rectangle(getBounds().x + getBounds().width / 4, getBounds().y + getBounds().height / 4, getBounds().width / 2, getBounds().height / 2);
 	}
 }

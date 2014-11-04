@@ -28,27 +28,27 @@ public class Transformation {
 		this.result = result;
 		this.setDuration(duration);
 	}
-	
+
 	public void setInitial(int initial) {
 		this.initial = initial;
 	}
-	
+
 	public int getInitial() {
 		return initial;
 	}
-	
+
 	public void setTool(int tool) {
 		this.tool = tool;
 	}
-	
+
 	public int getTool() {
 		return tool;
 	}
-	
+
 	public void setResult(int result) {
 		this.result = result;
 	}
-	
+
 	public int getResult() {
 		return result;
 	}

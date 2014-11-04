@@ -31,64 +31,83 @@ import com.feup.sfs.exceptions.FactoryInitializationException;
 public class Rotator extends Conveyor {
 	protected double currentRotation = 0;
 	protected boolean rotated = false;
-	
+
 	public Rotator(Properties properties, int id) throws FactoryInitializationException {
 		super(properties, id);
-		
+
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate -");
 		addDigitalOut(new SimpleDigitalOut(false), "Rotate +");
-		addDigitalIn(new SimpleDigitalIn(false), "Rotate - Sensor");	
-		addDigitalIn(new SimpleDigitalIn(false), "Rotate + Sensor");	
+		addDigitalIn(new SimpleDigitalIn(false), "Rotate - Sensor");
+		addDigitalIn(new SimpleDigitalIn(false), "Rotate + Sensor");
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Rotator";
 	}
-	
-	public void paint(Graphics g){
+
+	public void paint(Graphics g) {
 		super.paint(g);
-		
+
 		if (currentRotation != 0 && currentRotation != 90) {
 			g.setColor(Color.darkGray);
 			Rectangle r = getBounds();
 			int x1, y1, x2, y2;
-			double cosine = Math.cos((double)currentRotation*Math.PI/180);
-			double sine = Math.sin((double)currentRotation*Math.PI/180);
+			double cosine = Math.cos((double) currentRotation * Math.PI / 180);
+			double sine = Math.sin((double) currentRotation * Math.PI / 180);
 			int length = Math.max(r.width, r.height);
-	
+
 			if (orientation == Orientation.HORIZONTAL) {
-				x1 = (int) (r.getCenterX() - length / 2 * cosine) ; x2 = (int) (r.getCenterX() + length /  2* cosine);
-				y1 = (int) (r.getCenterY() - length / 2 * sine); y2 = (int) (r.getCenterY() + length / 2 * sine);
+				x1 = (int) (r.getCenterX() - length / 2 * cosine);
+				x2 = (int) (r.getCenterX() + length / 2 * cosine);
+				y1 = (int) (r.getCenterY() - length / 2 * sine);
+				y2 = (int) (r.getCenterY() + length / 2 * sine);
 			} else {
-				x1 = (int) (r.getCenterX() - length / 2 * sine) ; x2 = (int) (r.getCenterX() + length /  2* sine);
-				y1 = (int) (r.getCenterY() - length / 2 * cosine); y2 = (int) (r.getCenterY() + length / 2 * cosine);				
+				x1 = (int) (r.getCenterX() - length / 2 * sine);
+				x2 = (int) (r.getCenterX() + length / 2 * sine);
+				y1 = (int) (r.getCenterY() - length / 2 * cosine);
+				y2 = (int) (r.getCenterY() + length / 2 * cosine);
 			}
-			
+
 			g.drawLine(x1, y1, x2, y2);
 		}
-		
+
 		paintLight(g, false, 0, getDigitalOut(2), 1);
 		paintLight(g, true, 1, getDigitalIn(sensors), 1);
 		paintLight(g, true, 2, getDigitalIn(sensors + 1), 1);
 		paintLight(g, false, 3, getDigitalOut(3), 1);
 	}
-	
+
 	@Override
-	public void doStep(boolean conveyorBlocked){
-		if (facilityError) return;
+	public void doStep(boolean conveyorBlocked) {
+		if (facilityError)
+			return;
 		boolean forcing = false;
-		super.doStep(currentRotation != 0 && currentRotation !=90);
+		super.doStep(currentRotation != 0 && currentRotation != 90);
 		if (isRotatingAntiClockwise() && !isRotatingClockwise()) {
-			currentRotation += getFactory().getRotationSpeed()*getFactory().getSimulationTime()/1000;
-			if (currentRotation >= 90) {currentRotation = 90; setRotated(true); forcing = true;}
+			currentRotation += getFactory().getRotationSpeed() * getFactory().getSimulationTime() / 1000;
+			if (currentRotation >= 90) {
+				currentRotation = 90;
+				setRotated(true);
+				forcing = true;
+			}
 		}
 		if (!isRotatingAntiClockwise() && isRotatingClockwise()) {
-			currentRotation -= getFactory().getRotationSpeed()*getFactory().getSimulationTime()/1000;
-			if (currentRotation <= 0) {currentRotation = 0; setRotated(false); forcing = true;}
+			currentRotation -= getFactory().getRotationSpeed() * getFactory().getSimulationTime() / 1000;
+			if (currentRotation <= 0) {
+				currentRotation = 0;
+				setRotated(false);
+				forcing = true;
+			}
 		}
-		if (currentRotation == 0) setDigitalIn(sensors, true); else setDigitalIn(sensors, false);
-		if (currentRotation == 90) setDigitalIn(sensors + 1, true); else setDigitalIn(sensors + 1, false);
+		if (currentRotation == 0)
+			setDigitalIn(sensors, true);
+		else
+			setDigitalIn(sensors, false);
+		if (currentRotation == 90)
+			setDigitalIn(sensors + 1, true);
+		else
+			setDigitalIn(sensors + 1, false);
 		isForcing(forcing);
 	}
 
@@ -96,7 +115,7 @@ public class Rotator extends Conveyor {
 		if (rotated != this.rotated) {
 			ArrayList<Block> blocks = getFactory().getBlocks();
 			for (Block block : blocks) {
-				if (getBounds().contains(block.getBounds().getCenterX(), block.getBounds().getCenterY())){
+				if (getBounds().contains(block.getBounds().getCenterX(), block.getBounds().getCenterY())) {
 					double distX = getCenterX() - block.getCenterX();
 					double distY = getCenterY() - block.getCenterY();
 					block.setCenterX(getCenterX() - distY);
@@ -114,11 +133,14 @@ public class Rotator extends Conveyor {
 	private boolean isRotatingClockwise() {
 		return getDigitalOut(2);
 	}
-	
-	@Override 
-	public Orientation getOrientation(){
-		if (!rotated) return orientation;
-		if (orientation == Orientation.VERTICAL) return Orientation.HORIZONTAL;
-		else return Orientation.VERTICAL;
+
+	@Override
+	public Orientation getOrientation() {
+		if (!rotated)
+			return orientation;
+		if (orientation == Orientation.VERTICAL)
+			return Orientation.HORIZONTAL;
+		else
+			return Orientation.VERTICAL;
 	}
 }
