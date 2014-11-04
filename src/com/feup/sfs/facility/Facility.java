@@ -240,7 +240,7 @@ public abstract class Facility {
 	    return facilityError;
     }
 
-	public void fix() {
+	public void fixFacility() {
 		for (int i = 0; i < getNumberDigitalOuts(); i++)
 			setDigitalOut(i, false);
 		facilityError = false;

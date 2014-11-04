@@ -687,7 +687,7 @@ public class Factory extends JPanel implements ActionListener, KeyListener {
 		if (action.getSource() instanceof MenuItem) {
 			MenuItem item = (MenuItem) action.getSource();
 			if (popupfacility != null && item.getLabel().equals("Fix")) {
-				popupfacility.fix();
+				popupfacility.fixFacility();
 			}
 		}
 	}
